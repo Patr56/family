@@ -4,43 +4,34 @@ package pro.horoshilov.family.entity;
  * Фотография.
  */
 public class Photo {
-	/** Идентификатор. */
-	private Long id;
 
-	/** Ссылки на фото. */
-	private Link link;
+    /** Идентификатор. */
+    private Long id;
 
-	public Photo(final Long id, final Link link) {
-		this.id = id;
-		this.link = link;
-	}
+    /** Ссылка на фото. */
+    private String url;
 
-	public Link getLink() {
-		return link;
-	}
+    private Type type;
 
-	public Long getId() {
-		return id;
-	}
+    public Photo(String url, Type type) {
+        this.url = url;
+        this.type = type;
+    }
 
-	public static class Link {
-		/** Ссылка на фронтальную часть фото. */
-		private String front;
+    public Long getId() {
+        return id;
+    }
 
-		/** Ссылка на заднюю часть фото. */
-		private String back;
+    public String getUrl() {
+        return url;
+    }
 
-		public Link(String front, String back) {
-			this.front = front;
-			this.back = back;
-		}
+    public Type getType() {
+        return type;
+    }
 
-		public String getFront() {
-			return front;
-		}
-
-		public String getBack() {
-			return back;
-		}
-	}
+    public enum Type {
+        FRONT,
+        BACK
+    }
 }

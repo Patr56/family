@@ -1,153 +1,186 @@
 package pro.horoshilov.family.entity;
 
 import java.util.Calendar;
+import java.util.Map;
 
 /**
  * Человек.
  */
 public class Person {
 
-	/** Идентификатор. */
-	private Long id;
+    /** Идентификатор. */
+    private Long id;
 
-	/** ФИО. */
-	private Name name;
+    /** ФИО. */
+    private Name name;
 
-	/** Дата рождения. */
-	private Calendar birthday;
+    /** Дата рождения. */
+    private Calendar birthday;
 
-	/** Дата смерти. */
-	private Calendar death;
+    /** Дата смерти. */
+    private Calendar death;
 
-	/** Пол. */
-	private Sex sex;
+    /** Пол. */
+    private Sex sex;
 
-	/** Контактная информация. */
-	private ContactInformation contactInformation;
+    /** Контактная информация. */
+    private Map<String, String> contactInformation;
 
-	/** Аватарка. */
-	private Photo avatar;
+    /** Аватарка. */
+    private Photo avatar;
 
-	/** Описание. */
-	private String description;
+    /** Описание. */
+    private String description;
 
-	public Person(
-			final Long id,
-			final Name name,
-			final Calendar birthday,
-			final Calendar death,
-			final Sex sex,
-			final ContactInformation contactInformation,
-			final Photo avatar,
-			final String description
-	) {
-		this.id = id;
-		this.name = name;
-		this.birthday = birthday;
-		this.death = death;
-		this.sex = sex;
-		this.contactInformation = contactInformation;
-		this.avatar = avatar;
-		this.description = description;
-	}
+    public Person() {
+    }
 
-	public Name getName() {
-		return name;
-	}
+    public Person(
+            final Long id,
+            final Name name,
+            final Calendar birthday,
+            final Calendar death,
+            final Sex sex,
+            final Map<String, String> contactInformation,
+            final Photo avatar,
+            final String description
+    ) {
+        this.id = id;
+        this.name = name;
+        this.birthday = birthday;
+        this.death = death;
+        this.sex = sex;
+        this.contactInformation = contactInformation;
+        this.avatar = avatar;
+        this.description = description;
+    }
 
-	public Calendar getBirthday() {
-		return birthday;
-	}
+    public Name getName() {
+        return name;
+    }
 
-	public Calendar getDeath() {
-		return death;
-	}
+    public Calendar getBirthday() {
+        return birthday;
+    }
 
-	public Sex getSex() {
-		return sex;
-	}
+    public Calendar getDeath() {
+        return death;
+    }
 
-	public ContactInformation getContactInformation() {
-		return contactInformation;
-	}
+    public Sex getSex() {
+        return sex;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public Map<String, String> getContactInformation() {
+        return contactInformation;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Photo getAvatar() {
-		return avatar;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public static class ContactInformation {
-		private String phone;
+    public Photo getAvatar() {
+        return avatar;
+    }
 
-		private String email;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-		private String address;
+    public void setName(Name name) {
+        this.name = name;
+    }
 
-		public ContactInformation(final String phone, final String email, final String address) {
-			this.phone = phone;
-			this.email = email;
-			this.address = address;
-		}
+    public void setBirthday(Calendar birthday) {
+        this.birthday = birthday;
+    }
 
-		public String getPhone() {
-			return phone;
-		}
+    public void setDeath(Calendar death) {
+        this.death = death;
+    }
 
-		public String getEmail() {
-			return email;
-		}
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
 
-		public String getAddress() {
-			return address;
-		}
-	}
+    public void setContactInformation(Map<String, String> contactInformation) {
+        this.contactInformation = contactInformation;
+    }
 
-	/**
-	 * ФИО.
-	 */
-	public static class Name {
-		/** Имя. */
-		private String first;
+    public void setAvatar(Photo avatar) {
+        this.avatar = avatar;
+    }
 
-		/** Отчество. */
-		private String middle;
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-		/** Фамилия. */
-		private String last;
+    /**
+     * ФИО.
+     */
+    public static class Name {
+        /** Имя. */
+        private String first;
 
-		Name(String first, String middle, String last) {
-			this.first = first;
-			this.middle = middle;
-			this.last = last;
-		}
+        /** Отчество. */
+        private String middle;
 
-		public String getFirst() {
-			return first;
-		}
+        /** Фамилия. */
+        private String last;
 
-		public String getMiddle() {
-			return middle;
-		}
+        public Name(final String first, final String middle, final String last) {
+            this.first = first;
+            this.middle = middle;
+            this.last = last;
+        }
 
-		public String getLast() {
-			return last;
-		}
-	}
+        public String getFirst() {
+            return first;
+        }
 
-	/**
-	 * Пол.
-	 */
-	public enum Sex {
-		/** Мужской. */
-		MAN,
-		/** Женский. */
-		WOMAN
-	}
+        public String getMiddle() {
+            return middle;
+        }
+
+        public String getLast() {
+            return last;
+        }
+
+        @Override
+        public String toString() {
+            return "Name{" +
+                    "first='" + first + '\'' +
+                    ", middle='" + middle + '\'' +
+                    ", last='" + last + '\'' +
+                    '}';
+        }
+    }
+
+    /**
+     * Пол.
+     */
+    public enum Sex {
+        /** Мужской. */
+        MAN,
+        /** Женский. */
+        WOMAN
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name=" + name +
+                ", birthday=" + birthday +
+                ", death=" + death +
+                ", sex=" + sex +
+                ", contactInformation=" + contactInformation +
+                ", avatar=" + avatar +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
