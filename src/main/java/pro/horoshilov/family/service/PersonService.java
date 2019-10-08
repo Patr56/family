@@ -25,4 +25,8 @@ public class PersonService {
     public List<Person> findAll() {
         return personRepository.findAll();
     }
+
+    public Person findById(final Long personId) {
+        return personRepository.findById(personId);
+    }
 }

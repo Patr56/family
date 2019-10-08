@@ -1,12 +1,16 @@
 package pro.horoshilov.family.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Человек.
  */
 public class Person {
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     /** Идентификатор. */
     private Long id;
@@ -119,6 +123,26 @@ public class Person {
         this.description = description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id) &&
+                Objects.equals(name, person.name) &&
+                Objects.equals(formatDate(birthday), formatDate(person.birthday)) &&
+                Objects.equals(formatDate(death), formatDate(person.death)) &&
+                sex == person.sex &&
+                Objects.equals(contactInformation, person.contactInformation) &&
+                Objects.equals(avatar, person.avatar) &&
+                Objects.equals(description, person.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, formatDate(birthday), formatDate(death), sex, contactInformation, avatar, description);
+    }
+
     /**
      * ФИО.
      */
@@ -158,6 +182,21 @@ public class Person {
                     ", last='" + last + '\'' +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Name name = (Name) o;
+            return Objects.equals(first, name.first) &&
+                    Objects.equals(middle, name.middle) &&
+                    Objects.equals(last, name.last);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(first, middle, last);
+        }
     }
 
     /**
@@ -170,13 +209,17 @@ public class Person {
         WOMAN
     }
 
+    private String formatDate(Calendar date) {
+        return date != null ? sdf.format(date.getTime()) : null;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
                 "id=" + id +
                 ", name=" + name +
-                ", birthday=" + birthday +
-                ", death=" + death +
+                ", birthday=" + formatDate(birthday) +
+                ", death=" + formatDate(death) +
                 ", sex=" + sex +
                 ", contactInformation=" + contactInformation +
                 ", avatar=" + avatar +

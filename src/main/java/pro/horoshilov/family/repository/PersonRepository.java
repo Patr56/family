@@ -15,6 +15,7 @@ import pro.horoshilov.family.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -34,53 +35,75 @@ public class PersonRepository {
     }
 
     //language=sql
-    private final static String SQL_INSERT_PERSON = "insert into person ( " +
-            "birthday, " +
-            "death, " +
-            "description, " +
-            "name_first, " +
-            "name_last, " +
-            "name_middle, " +
-            "sex) " +
-            "values ( " +
-            ":birthday, " +
-            ":death, " +
-            ":description, " +
-            ":name_first, " +
-            ":name_last, " +
-            ":name_middle, " +
-            ":sex)";
+    private final static String SQL_INSERT_PERSON =
+            "insert into person ( " +
+                        "birthday, " +
+                        "death, " +
+                        "description, " +
+                        "name_first, " +
+                        "name_middle, " +
+                        "name_last, " +
+                        "sex) " +
+                "values ( " +
+                        ":birthday, " +
+                        ":death, " +
+                        ":description, " +
+                        ":name_first, " +
+                        ":name_middle, " +
+                        ":name_last, " +
+                        ":sex)";
 
     //language=sql
-    private final static String SQL_INSERT_CONTACT_INFORMATION = "insert into contact_information ( " +
-            "person_id, " +
-            "code, " +
-            "value) " +
-            "values ( " +
-            ":person_id, " +
-            ":code, " +
-            ":value)";
+    private final static String SQL_INSERT_CONTACT_INFORMATION =
+            "insert into contact_information ( " +
+                        "person_id, " +
+                        "code, " +
+                        "value) " +
+                "values ( " +
+                        ":person_id, " +
+                        ":code, " +
+                        ":value)";
     
     //language=sql
-    private final static String SQL_GET_ALL = "select " +
-            "p.person_id, " +
-            "p.birthday, " +
-            "p.death, " +
-            "p.description, " +
-            "p.name_first, " +
-            "p.name_last, " +
-            "p.name_middle, " +
-            "p.person_id, " +
-            "p.sex " +
-            "from " +
-            "person p";
+    private final static String SQL_GET_ALL =
+            "select " +
+                    "p.person_id, " +
+                    "p.birthday, " +
+                    "p.death, " +
+                    "p.description, " +
+                    "p.name_first, " +
+                    "p.name_last, " +
+                    "p.name_middle, " +
+                    "p.person_id, " +
+                    "p.sex " +
+                "from " +
+                    "person p";
 
     //language=sql
-    private final static String SQL_GET_CONTACT_INFORMATION = "select " +
-            "ci.code, " +
-            "ci.value " +
+    private final static String SQL_GET_BY_ID =
+            "select " +
+                  "p.person_id, " +
+                  "p.birthday, " +
+                  "p.death, " +
+                  "p.description, " +
+                  "p.name_first, " +
+                  "p.name_last, " +
+                  "p.name_middle, " +
+                  "p.person_id, " +
+                  "p.sex " +
+             "from " +
+                   "person p " +
+            "where " +
+                  "p.person_id = :person_id";
+
+    //language=sql
+    private final static String SQL_GET_CONTACT_INFORMATION =
+            "select " +
+                   "ci.code, " +
+                   "ci.value " +
             "from " +
-            "contact_information ci where ci.person_id = :person_id;";
+                "contact_information ci " +
+            "where ci.person_id = :person_id;";
 
     public Long insert(final Person person) throws Exception {
         Long personId = insertPerson(person);
@@ -113,8 +136,8 @@ public class PersonRepository {
 
         if (person.getName() != null) {
             namedParameters.put("name_first", person.getName().getFirst());
-            namedParameters.put("name_last", person.getName().getMiddle());
-            namedParameters.put("name_middle", person.getName().getLast());
+            namedParameters.put("name_middle", person.getName().getMiddle());
+            namedParameters.put("name_last", person.getName().getLast());
         } else {
             namedParameters.put("name_first", null);
             namedParameters.put("name_last", null);
@@ -135,7 +158,7 @@ public class PersonRepository {
         }
     }
 
-    private int[] insertContactInformation(final Number personId, final Map<String, String> contactInformation) {
+    private void insertContactInformation(final Number personId, final Map<String, String> contactInformation) {
 
         List<Map<String, Object>> namedParameters = new ArrayList<>(contactInformation.size());
 
@@ -151,13 +174,35 @@ public class PersonRepository {
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(namedParameters);
   
-
-
-        return namedParameterJdbcTemplate.batchUpdate(SQL_INSERT_CONTACT_INFORMATION, batch);
+        namedParameterJdbcTemplate.batchUpdate(SQL_INSERT_CONTACT_INFORMATION, batch);
     }
 
+    public Person findById(final Long personId) {
+        final Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("person_id", personId);
+        return namedParameterJdbcTemplate.queryForObject(SQL_GET_BY_ID, namedParameters, new PersonRowMapper());
+    }
+
+
     public List<Person> findAll() {
-        return namedParameterJdbcTemplate.query(SQL_GET_ALL, (rs, rowNum) -> {
+        return namedParameterJdbcTemplate.query(SQL_GET_ALL, new PersonRowMapper());
+    }
+
+    private static class ContactInformationResultSetExtractor implements ResultSetExtractor<Map<String, String>> {
+        @Override
+        public Map<String, String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
+            final Map<String, String> mapResult = new HashMap<>();
+            while (rs.next()) {
+                mapResult.put(rs.getString("code"), rs.getString("value"));
+            }
+            return mapResult;
+        }
+    }
+
+    private class PersonRowMapper implements RowMapper<Person> {
+
+        @Override
+        public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
             Person person = new Person();
 
             final Date birthdayRow = rs.getDate("birthday");
@@ -188,7 +233,7 @@ public class PersonRepository {
 
             person.setName(personName);
 
-            Long personId = rs.getLong("person_id");
+            final Long personId = rs.getLong("person_id");
 
             person.setId(personId);
             person.setSex(Person.Sex.valueOf(rs.getString("sex")));
@@ -196,18 +241,12 @@ public class PersonRepository {
             final Map<String, String> contactInformation = namedParameterJdbcTemplate.query(
                     SQL_GET_CONTACT_INFORMATION,
                     new MapSqlParameterSource("person_id", personId),
-                    rs1 -> {
-                        Map<String, String> mapResult = new HashMap<>();
-                        while (rs1.next()) {
-                            mapResult.put(rs1.getString("code"), rs1.getString("value"));
-                        }
-                        return mapResult;
-                    }
+                    new ContactInformationResultSetExtractor()
             );
 
             person.setContactInformation(contactInformation);
 
             return person;
-        });
+        }
     }
 }

@@ -32,6 +32,7 @@ CREATE TABLE photo_information(
     area_bottom_right_x real NOT NULL,
     area_bottom_right_y real NOT NULL
 );
+
 CREATE TABLE relationship(
     relationship_id serial PRIMARY KEY,
     person_id integer REFERENCES person,
