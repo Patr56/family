@@ -20,11 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
@@ -90,11 +86,11 @@
                 <version>6.0.3</version>
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/postgres</url>
+                    <url>jdbc:postgresql://localhost:5432/family</url>
                     <user>postgres</user>
                     <password>postgres</password>
                     <schemas>
-                        <schema>family</schema>
+                        <schema>public</schema>
                     </schemas>
                 </configuration>
             </plugin>

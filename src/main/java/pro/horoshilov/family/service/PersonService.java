@@ -26,7 +26,7 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Person findById(final Long personId) {
+    public Person findById(final Long personId) throws Exception {
         return personRepository.findById(personId);
     }
 }

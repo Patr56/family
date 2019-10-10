@@ -14,6 +14,7 @@ import pro.horoshilov.family.entity.Person;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -177,12 +178,15 @@ public class PersonRepository {
         namedParameterJdbcTemplate.batchUpdate(SQL_INSERT_CONTACT_INFORMATION, batch);
     }
 
-    public Person findById(final Long personId) {
-        final Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("person_id", personId);
-        return namedParameterJdbcTemplate.queryForObject(SQL_GET_BY_ID, namedParameters, new PersonRowMapper());
+    public Person findById(final Long personId) throws Exception {
+        try {
+            final Map<String, Object> namedParameters = new HashMap<>();
+            namedParameters.put("person_id", personId);
+            return namedParameterJdbcTemplate.queryForObject(SQL_GET_BY_ID, namedParameters, new PersonRowMapper());
+        } catch (final EmptyResultDataAccessException e) {
+            throw new Exception("Person not found", e);
+        }
     }
-
 
     public List<Person> findAll() {
         return namedParameterJdbcTemplate.query(SQL_GET_ALL, new PersonRowMapper());
