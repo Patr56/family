@@ -2,6 +2,8 @@ package pro.horoshilov.family.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.horoshilov.family.entity.FailureResponse;
 
 import org.springframework.http.HttpStatus;
@@ -14,18 +16,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler extends ExceptionHandlerExceptionResolver {
+    private Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<FailureResponse> customErrorHandle(Exception ex, WebRequest request) {
+    public ResponseEntity<FailureResponse> handleErrorDefault(final Exception ex, final WebRequest request) {
         return prepareError(ex);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<FailureResponse> handleError404(HttpServletRequest request, Exception ex) {
+    public ResponseEntity<FailureResponse> handleError404(final HttpServletRequest request, final Exception ex) {
         return prepareError(ex);
     }
 
-    private ResponseEntity<FailureResponse> prepareError(Exception ex) {
+    private ResponseEntity<FailureResponse> prepareError(final Exception ex) {
+        logger.error("Request error: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new FailureResponse(ex.getMessage()), HttpStatus.OK);
     }
 }
