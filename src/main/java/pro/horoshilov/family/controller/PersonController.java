@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("person")
 public class PersonController {
 
-    private Logger logger = LoggerFactory.getLogger(PersonController.class);
-
     private PersonService personService;
 
     @Autowired
@@ -34,46 +32,29 @@ public class PersonController {
     }
 
     @PostMapping
-    public BaseResponse insert(@RequestParam final Person person) {
-        logger.info("person {}", person);
-        try {
-            final Map<String, Long> result = new HashMap<>();
-            final Long personId = personService.insert(person);
-            result.put("personId", personId);
+    public BaseResponse insert(@RequestParam final Person person) throws Exception {
+        final Map<String, Long> result = new HashMap<>();
+        final Long personId = personService.insert(person);
+        result.put("personId", personId);
 
-            return new SuccessResponse<>(result);
-        } catch (final Exception e) {
-            logger.error("Error on insert person: {}, message: {}", person, e.getMessage(), e);
-            return new FailureResponse(e.getMessage());
-        }
+        return new SuccessResponse<>(result);
     }
 
     @GetMapping
     public BaseResponse findAll() {
-        try {
-            final Map<String, List<Person>> result = new HashMap<>();
-            final List<Person> persons = personService.findAll();
-            result.put("person", persons);
+        final Map<String, List<Person>> result = new HashMap<>();
+        final List<Person> persons = personService.findAll();
+        result.put("person", persons);
 
-            return new SuccessResponse<>(result);
-        } catch (final Exception e) {
-            logger.error("Error on find all person. Message: {}", e.getMessage(), e);
-            return new FailureResponse(e.getMessage());
-        }
+        return new SuccessResponse<>(result);
     }
 
     @GetMapping("{personId}")
-    public BaseResponse findById(@PathVariable("personId") final Long personId) {
-        logger.info("findById personId {}", personId);
-        try {
-            final Map<String, Person> result = new HashMap<>();
-            final Person person = personService.findById(personId);
-            result.put("person", person);
+    public BaseResponse findById(@PathVariable("personId") final Long personId) throws Exception {
+        final Map<String, Person> result = new HashMap<>();
+        final Person person = personService.findById(personId);
+        result.put("person", person);
 
-            return new SuccessResponse<>(result);
-        } catch (final Exception e) {
-            logger.error("Error on find person by id: {} . Message: {}",personId, e.getMessage(), e);
-            return new FailureResponse(e.getMessage());
-        }
+        return new SuccessResponse<>(result);
     }
 }
