@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import pro.horoshilov.family.entity.Person;
+import pro.horoshilov.family.exception.EmptyInsertIdException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -61,7 +62,7 @@ public class PersonServiceSpec {
         birthday.set(Calendar.MINUTE, 0);
         birthday.set(Calendar.SECOND, 0);
         birthday.set(Calendar.MILLISECOND, 0);
-        System.out.println("--------------" + birthday.getTime());
+
         person.setBirthday(birthday);
 
         return person;
@@ -84,7 +85,7 @@ public class PersonServiceSpec {
         birthday.set(1988, Calendar.MARCH, 6);
         person.setBirthday(birthday);
 
-        Long personId = personService.insert(person);
+        Long personId = personService.add(person);
         assertThat(personId).isGreaterThan(0);
 
         List<Person> personList = personService.findAll();
@@ -102,13 +103,14 @@ public class PersonServiceSpec {
     }
 
     @Test
-    public void testFindAll() throws Exception {
+    public void testFindAll() throws EmptyInsertIdException {
+
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        personService.insert(generatePerson());
-        personService.insert(generatePerson());
-        personService.insert(generatePerson());
+        personService.add(generatePerson());
+        personService.add(generatePerson());
+        personService.add(generatePerson());
 
         List<Person> personListNew = personService.findAll();
 
@@ -124,9 +126,9 @@ public class PersonServiceSpec {
         final Person person2 = generatePerson();
         final Person person3 = generatePerson();
 
-        Long personId1 = personService.insert(person1);
-        Long personId2 = personService.insert(person2);
-        Long personId3 = personService.insert(person3);
+        Long personId1 = personService.add(person1);
+        Long personId2 = personService.add(person2);
+        Long personId3 = personService.add(person3);
 
         Person personFromDb1 = personService.findById(personId1);
         Person personFromDb2 = personService.findById(personId2);

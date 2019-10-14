@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.Person;
+import pro.horoshilov.family.exception.EmptyInsertIdException;
+import pro.horoshilov.family.repository.specification.ISqlSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,7 +27,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository("personRepository")
-public class PersonRepository {
+public class PersonRepository implements IRepository<Person> {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -35,7 +36,7 @@ public class PersonRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    //language=sql
+    // language=sql
     private final static String SQL_INSERT_PERSON =
             "insert into person ( " +
                         "birthday, " +
@@ -54,7 +55,7 @@ public class PersonRepository {
                         ":name_last, " +
                         ":sex)";
 
-    //language=sql
+    // language=sql
     private final static String SQL_INSERT_CONTACT_INFORMATION =
             "insert into contact_information ( " +
                         "person_id, " +
@@ -66,38 +67,6 @@ public class PersonRepository {
                         ":value)";
     
     //language=sql
-    private final static String SQL_GET_ALL =
-            "select " +
-                    "p.person_id, " +
-                    "p.birthday, " +
-                    "p.death, " +
-                    "p.description, " +
-                    "p.name_first, " +
-                    "p.name_last, " +
-                    "p.name_middle, " +
-                    "p.person_id, " +
-                    "p.sex " +
-                "from " +
-                    "person p";
-
-    //language=sql
-    private final static String SQL_GET_BY_ID =
-            "select " +
-                  "p.person_id, " +
-                  "p.birthday, " +
-                  "p.death, " +
-                  "p.description, " +
-                  "p.name_first, " +
-                  "p.name_last, " +
-                  "p.name_middle, " +
-                  "p.person_id, " +
-                  "p.sex " +
-             "from " +
-                   "person p " +
-            "where " +
-                  "p.person_id = :person_id";
-
-    //language=sql
     private final static String SQL_GET_CONTACT_INFORMATION =
             "select " +
                    "ci.code, " +
@@ -106,7 +75,8 @@ public class PersonRepository {
                 "contact_information ci " +
             "where ci.person_id = :person_id;";
 
-    public Long insert(final Person person) throws Exception {
+    @Override
+    public Long add(final Person person) throws EmptyInsertIdException {
         Long personId = insertPerson(person);
 
         Map<String, String> contactInformation = person.getContactInformation();
@@ -117,8 +87,23 @@ public class PersonRepository {
 
         return personId;
     }
-    
-    private Long insertPerson(final Person person) throws Exception {
+
+    @Override
+    public void update(Person person) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove(Person person) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Person> query(ISqlSpecification specification) {
+        return namedParameterJdbcTemplate.query(specification.toSqlClauses(), specification.getParamMap(), new PersonRowMapper());
+    }
+
+    private Long insertPerson(final Person person) throws EmptyInsertIdException {
         final Map<String, Object> namedParameters = new HashMap<>();
 
         if (person.getBirthday() != null) {
@@ -155,7 +140,7 @@ public class PersonRepository {
         if (keyHolder.getKey() != null) {
             return keyHolder.getKey().longValue();
         } else {
-            throw new Exception("Can't return person id");
+            throw new EmptyInsertIdException("Can't return person id");
         }
     }
 
@@ -176,20 +161,6 @@ public class PersonRepository {
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(namedParameters);
   
         namedParameterJdbcTemplate.batchUpdate(SQL_INSERT_CONTACT_INFORMATION, batch);
-    }
-
-    public Person findById(final Long personId) throws Exception {
-        try {
-            final Map<String, Object> namedParameters = new HashMap<>();
-            namedParameters.put("person_id", personId);
-            return namedParameterJdbcTemplate.queryForObject(SQL_GET_BY_ID, namedParameters, new PersonRowMapper());
-        } catch (final EmptyResultDataAccessException e) {
-            throw new Exception("Person not found", e);
-        }
-    }
-
-    public List<Person> findAll() {
-        return namedParameterJdbcTemplate.query(SQL_GET_ALL, new PersonRowMapper());
     }
 
     private static class ContactInformationResultSetExtractor implements ResultSetExtractor<Map<String, String>> {

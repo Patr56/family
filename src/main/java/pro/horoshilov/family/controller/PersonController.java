@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pro.horoshilov.family.entity.BaseResponse;
-import pro.horoshilov.family.entity.FailureResponse;
 import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.entity.SuccessResponse;
+import pro.horoshilov.family.exception.EmptyInsertIdException;
+import pro.horoshilov.family.exception.FoundTooManyEntityException;
+import pro.horoshilov.family.exception.NotFoundEntityException;
 import pro.horoshilov.family.service.PersonService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,9 @@ public class PersonController {
     }
 
     @PostMapping
-    public BaseResponse insert(@RequestParam final Person person) throws Exception {
+    public BaseResponse insert(@RequestParam final Person person) throws EmptyInsertIdException {
         final Map<String, Long> result = new HashMap<>();
-        final Long personId = personService.insert(person);
+        final Long personId = personService.add(person);
         result.put("personId", personId);
 
         return new SuccessResponse<>(result);
@@ -50,7 +50,7 @@ public class PersonController {
     }
 
     @GetMapping("{personId}")
-    public BaseResponse findById(@PathVariable("personId") final Long personId) throws Exception {
+    public BaseResponse findById(@PathVariable("personId") final Long personId) throws FoundTooManyEntityException, NotFoundEntityException {
         final Map<String, Person> result = new HashMap<>();
         final Person person = personService.findById(personId);
         result.put("person", person);
