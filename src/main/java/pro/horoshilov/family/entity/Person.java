@@ -59,6 +59,17 @@ public class Person {
         this.description = description;
     }
 
+    public Person(final Person person) {
+        this.id = person.getId();
+        this.name = person.getName();
+        this.birthday = person.getBirthday();
+        this.death = person.getDeath();
+        this.sex = person.getSex();
+        this.contactInformation = person.getContactInformation();
+        this.avatar = person.getAvatar();
+        this.description = person.getDescription();
+    }
+
     public Name getName() {
         return name;
     }

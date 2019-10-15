@@ -7,7 +7,6 @@ import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
 import pro.horoshilov.family.repository.PersonRepository;
-import pro.horoshilov.family.repository.specification.ISqlSpecification;
 import pro.horoshilov.family.repository.specification.PersonFindAllSpecification;
 import pro.horoshilov.family.repository.specification.PersonFindByIdSpecification;
 
@@ -26,6 +25,13 @@ public class PersonService {
 
     public Long add(final Person person) throws EmptyInsertIdException {
         return personRepository.add(person);
+    }
+
+    public void update(final Person person) throws NotFoundEntityException {
+        final int count = personRepository.update(person);
+        if (count == 0) {
+            throw new NotFoundEntityException(String.format("Person with id: %s not found for updating.", person.getId()));
+        }
     }
 
     public void remove(final Person person) throws NotFoundEntityException {

@@ -196,4 +196,37 @@ public class PersonServiceSpec {
         assertThat(personFromDb2).isEqualTo(person2);
         assertThat(personFromDb3).isEqualTo(person3);
     }
+
+    @Test
+    public void testUpdate() throws EmptyInsertIdException, FoundTooManyEntityException, NotFoundEntityException {
+        List<Person> personListOld = personService.findAll();
+        assertThat(personListOld.size()).isEqualTo(0);
+
+        final Person person = generatePerson(true);
+        final Person.Name name = new Person.Name("name", "middle", "lastName");
+        person.setName(name);
+        person.setSex(Person.Sex.MAN);
+
+        Long personId = personService.add(person);
+
+        Person personFromDb = personService.findById(personId);
+
+        List<Person> personListNew = personService.findAll();
+        assertThat(personListNew.size()).isEqualTo(1);
+
+        person.setId(personId);
+
+        assertThat(personFromDb).isEqualTo(person);
+
+        final Person modPerson = new Person(person);
+        final Person.Name newName = new Person.Name("Name", "Middle", "Lastname");
+        modPerson.setName(newName);
+        modPerson.setSex(Person.Sex.WOMAN);
+
+        personService.update(modPerson);
+
+        Person personFromDbMod = personService.findById(personId);
+
+        assertThat(personFromDbMod).isEqualTo(modPerson);
+    }
 }

@@ -37,6 +37,18 @@ public class PersonRepository implements IRepository<Person> {
     }
 
     // language=sql
+    private final static String SQL_UPDATE_PERSON =
+            "update person p " +
+               "set p.birthday = :birthday, " +
+                   "p.death = :death, " +
+                   "p.description = :description, " +
+                   "p.name_first = :name_first, " +
+                   "p.name_middle = :name_middle, " +
+                   "p.name_last = :name_last, " +
+                   "p.sex = :sex " +
+             "where p.person_id = :person_id";
+
+    // language=sql
     private final static String SQL_INSERT_PERSON =
             "insert into person ( " +
                         "birthday, " +
@@ -93,7 +105,10 @@ public class PersonRepository implements IRepository<Person> {
 
     @Override
     public int update(Person person) {
-        throw new UnsupportedOperationException();
+        final Map<String, Object> namedParameters = getParamsFromPerson(person);
+        namedParameters.put("person_id", person.getId());
+
+        return namedParameterJdbcTemplate.update(SQL_UPDATE_PERSON, namedParameters);
     }
 
     @Override
@@ -109,7 +124,7 @@ public class PersonRepository implements IRepository<Person> {
         return namedParameterJdbcTemplate.query(specification.toSqlClauses(), specification.getParamMap(), new PersonRowMapper());
     }
 
-    private Long insertPerson(final Person person) throws EmptyInsertIdException {
+    private Map<String, Object> getParamsFromPerson(final Person person) {
         final Map<String, Object> namedParameters = new HashMap<>();
 
         if (person.getBirthday() != null) {
@@ -138,6 +153,11 @@ public class PersonRepository implements IRepository<Person> {
 
         namedParameters.put("sex", person.getSex().name());
 
+        return namedParameters;
+    }
+
+    private Long insertPerson(final Person person) throws EmptyInsertIdException {
+        final Map<String, Object> namedParameters = getParamsFromPerson(person);
         final SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameters);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
