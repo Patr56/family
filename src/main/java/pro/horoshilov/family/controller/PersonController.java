@@ -13,6 +13,7 @@ import pro.horoshilov.family.exception.NotFoundEntityException;
 import pro.horoshilov.family.service.PersonService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,15 @@ public class PersonController {
         final Map<String, Long> result = new HashMap<>();
         final Long personId = personService.add(person);
         result.put("personId", personId);
+
+        return new SuccessResponse<>(result);
+    }
+
+    @DeleteMapping
+    public BaseResponse remove(@RequestParam final Person person) throws NotFoundEntityException {
+        final Map<String, Long> result = new HashMap<>();
+        personService.remove(person);
+        result.put("personId", person.getId());
 
         return new SuccessResponse<>(result);
     }

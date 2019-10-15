@@ -65,7 +65,10 @@ public class PersonRepository implements IRepository<Person> {
                         ":person_id, " +
                         ":code, " +
                         ":value)";
-    
+
+    //language=sql
+    private final static String SQL_DELETE_PERSON = "delete from person p where p.person_id = :person_id";
+
     //language=sql
     private final static String SQL_GET_CONTACT_INFORMATION =
             "select " +
@@ -77,9 +80,9 @@ public class PersonRepository implements IRepository<Person> {
 
     @Override
     public Long add(final Person person) throws EmptyInsertIdException {
-        Long personId = insertPerson(person);
+        final Long personId = insertPerson(person);
 
-        Map<String, String> contactInformation = person.getContactInformation();
+        final Map<String, String> contactInformation = person.getContactInformation();
 
         if (contactInformation != null) {
             insertContactInformation(personId, contactInformation);
@@ -89,13 +92,16 @@ public class PersonRepository implements IRepository<Person> {
     }
 
     @Override
-    public void update(Person person) {
+    public int update(Person person) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove(Person person) {
-        throw new UnsupportedOperationException();
+    public int remove(Person person) {
+        final Long personId = person.getId();
+
+        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("person_id", personId);
+        return namedParameterJdbcTemplate.update(SQL_DELETE_PERSON, sqlParameterSource);
     }
 
     @Override
@@ -132,7 +138,7 @@ public class PersonRepository implements IRepository<Person> {
 
         namedParameters.put("sex", person.getSex().name());
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameters);
+        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameters);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -219,7 +225,9 @@ public class PersonRepository implements IRepository<Person> {
                     new ContactInformationResultSetExtractor()
             );
 
-            person.setContactInformation(contactInformation);
+            if (contactInformation != null && contactInformation.size() > 0) {
+                person.setContactInformation(contactInformation);
+            }
 
             return person;
         }

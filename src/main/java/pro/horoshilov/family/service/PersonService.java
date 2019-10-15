@@ -28,14 +28,19 @@ public class PersonService {
         return personRepository.add(person);
     }
 
+    public void remove(final Person person) throws NotFoundEntityException {
+        final int count = personRepository.remove(person);
+        if (count == 0) {
+            throw new NotFoundEntityException(String.format("Person with id: %s not found for deleting.", person.getId()));
+        }
+    }
+
     public List<Person> findAll() {
-        final ISqlSpecification sqlSpecification = new PersonFindAllSpecification();
-        return personRepository.query(sqlSpecification);
+        return personRepository.query(new PersonFindAllSpecification());
     }
 
     public Person findById(final Long personId) throws NotFoundEntityException, FoundTooManyEntityException {
-        final ISqlSpecification sqlSpecification = new PersonFindByIdSpecification(personId);
-        final List<Person> result = personRepository.query(sqlSpecification);
+        final List<Person> result = personRepository.query(new PersonFindByIdSpecification(personId));
 
         final int size = result.size();
 
