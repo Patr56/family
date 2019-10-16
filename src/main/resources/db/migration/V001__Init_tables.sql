@@ -13,7 +13,9 @@ CREATE TABLE contact_information(
     contact_information_id serial PRIMARY KEY,
     person_id integer REFERENCES person,
     code varchar(255) NOT NULL,
-    value varchar (255) NOT NULL
+    value text NOT NULL,
+    type varchar(16) NOT NULL,
+    position smallint NOT NULL
 );
 
 CREATE TABLE photo(

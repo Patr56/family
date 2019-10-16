@@ -43,22 +43,13 @@ public class PersonServiceSpec {
 
     }
 
-    private Person generatePerson(final boolean withContactInformation) {
+    private Person generatePerson() {
         final Faker faker = new Faker(new Locale("ru"));
         final Person person = new Person();
         final Name nameItem = faker.name();
         final String[] name = nameItem.nameWithMiddle().split(" ");
         person.setName(new Person.Name(name[0], name[1], name[2]));
         person.setSex(random.nextInt(100) > 50 ? Person.Sex.MAN : Person.Sex.WOMAN);
-
-        if (withContactInformation) {
-            final Map<String, String> contactInformation = new HashMap<>();
-            contactInformation.put("e-mail", nameItem.username() + "@mail.ru");
-            contactInformation.put("телефон", faker.phoneNumber().phoneNumber());
-            contactInformation.put("индекс", faker.address().zipCode());
-
-            person.setContactInformation(contactInformation);
-        }
 
         final Calendar birthday = new GregorianCalendar();
 
@@ -79,13 +70,6 @@ public class PersonServiceSpec {
         person.setName(new Person.Name("Павел", "Сергеевич", "Хорошилов"));
         person.setSex(Person.Sex.MAN);
 
-        Map<String, String> contactInformation = new HashMap<>();
-        contactInformation.put("e-mail", "patr56@yande.ru");
-        contactInformation.put("телефон", "8(916)588-98-92");
-        contactInformation.put("индекс", "41-24-08");
-
-        person.setContactInformation(contactInformation);
-
         Calendar birthday = new GregorianCalendar();
         birthday.set(1988, Calendar.MARCH, 6);
         person.setBirthday(birthday);
@@ -100,11 +84,6 @@ public class PersonServiceSpec {
         assertThat(personFromDb.getBirthday().get(Calendar.YEAR)).isEqualTo(1988);
         assertThat(personFromDb.getBirthday().get(Calendar.MONTH)).isEqualTo(Calendar.MARCH);
         assertThat(personFromDb.getBirthday().get(Calendar.DAY_OF_MONTH)).isEqualTo(6);
-
-        final Map<String, String> contactInformationFromDb = personFromDb.getContactInformation();
-
-        assertThat(contactInformationFromDb.size()).isEqualTo(3);
-        assertThat(contactInformationFromDb.get("телефон")).isEqualTo("8(916)588-98-92");
     }
 
     @Test
@@ -113,9 +92,9 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        personService.add(generatePerson(true));
-        personService.add(generatePerson(true));
-        personService.add(generatePerson(true));
+        personService.add(generatePerson());
+        personService.add(generatePerson());
+        personService.add(generatePerson());
 
         List<Person> personListNew = personService.findAll();
 
@@ -127,12 +106,12 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person = generatePerson(false);
+        final Person person = generatePerson();
 
         Long personId = personService.add(person);
-        personService.add(generatePerson(false));
-        personService.add(generatePerson(false));
-        personService.add(generatePerson(false));
+        personService.add(generatePerson());
+        personService.add(generatePerson());
+        personService.add(generatePerson());
 
         Person personFromDb = personService.findById(personId);
 
@@ -149,33 +128,14 @@ public class PersonServiceSpec {
         assertThat(personListAfterRemove.size()).isEqualTo(3);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    public void testRemoveThrow() throws EmptyInsertIdException, FoundTooManyEntityException, NotFoundEntityException {
-        List<Person> personListOld = personService.findAll();
-        assertThat(personListOld.size()).isEqualTo(0);
-
-        final Person person = generatePerson(true);
-
-        Long personId = personService.add(person);
-
-        Person personFromDb = personService.findById(personId);
-
-        List<Person> personListNew = personService.findAll();
-        assertThat(personListNew.size()).isEqualTo(1);
-        person.setId(personId);
-        assertThat(personFromDb).isEqualTo(person);
-
-        personService.remove(person);
-    }
-
     @Test
     public void testFindById() throws EmptyInsertIdException, FoundTooManyEntityException, NotFoundEntityException {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person1 = generatePerson(true);
-        final Person person2 = generatePerson(true);
-        final Person person3 = generatePerson(true);
+        final Person person1 = generatePerson();
+        final Person person2 = generatePerson();
+        final Person person3 = generatePerson();
 
         Long personId1 = personService.add(person1);
         Long personId2 = personService.add(person2);
@@ -202,7 +162,7 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person = generatePerson(true);
+        final Person person = generatePerson();
         final Person.Name name = new Person.Name("name", "middle", "lastName");
         person.setName(name);
         person.setSex(Person.Sex.MAN);

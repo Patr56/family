@@ -2,7 +2,6 @@ package pro.horoshilov.family.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,9 +26,6 @@ public class Person {
     /** Пол. */
     private Sex sex;
 
-    /** Контактная информация. */
-    private Map<String, String> contactInformation;
-
     /** Аватарка. */
     private Photo avatar;
 
@@ -45,7 +41,6 @@ public class Person {
             final Calendar birthday,
             final Calendar death,
             final Sex sex,
-            final Map<String, String> contactInformation,
             final Photo avatar,
             final String description
     ) {
@@ -54,7 +49,6 @@ public class Person {
         this.birthday = birthday;
         this.death = death;
         this.sex = sex;
-        this.contactInformation = contactInformation;
         this.avatar = avatar;
         this.description = description;
     }
@@ -65,7 +59,6 @@ public class Person {
         this.birthday = person.getBirthday();
         this.death = person.getDeath();
         this.sex = person.getSex();
-        this.contactInformation = person.getContactInformation();
         this.avatar = person.getAvatar();
         this.description = person.getDescription();
     }
@@ -86,10 +79,6 @@ public class Person {
         return sex;
     }
 
-    public Map<String, String> getContactInformation() {
-        return contactInformation;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -102,40 +91,36 @@ public class Person {
         return avatar;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
-    public void setName(Name name) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
-    public void setBirthday(Calendar birthday) {
+    public void setBirthday(final Calendar birthday) {
         this.birthday = birthday;
     }
 
-    public void setDeath(Calendar death) {
+    public void setDeath(final Calendar death) {
         this.death = death;
     }
 
-    public void setSex(Sex sex) {
+    public void setSex(final Sex sex) {
         this.sex = sex;
     }
 
-    public void setContactInformation(Map<String, String> contactInformation) {
-        this.contactInformation = contactInformation;
-    }
-
-    public void setAvatar(Photo avatar) {
+    public void setAvatar(final Photo avatar) {
         this.avatar = avatar;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
@@ -144,14 +129,13 @@ public class Person {
                 Objects.equals(formatDate(birthday), formatDate(person.birthday)) &&
                 Objects.equals(formatDate(death), formatDate(person.death)) &&
                 sex == person.sex &&
-                Objects.equals(contactInformation, person.contactInformation) &&
                 Objects.equals(avatar, person.avatar) &&
                 Objects.equals(description, person.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, formatDate(birthday), formatDate(death), sex, contactInformation, avatar, description);
+        return Objects.hash(id, name, formatDate(birthday), formatDate(death), sex, avatar, description);
     }
 
     /**
@@ -195,7 +179,7 @@ public class Person {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Name name = (Name) o;
@@ -220,7 +204,7 @@ public class Person {
         WOMAN
     }
 
-    private String formatDate(Calendar date) {
+    private String formatDate(final Calendar date) {
         return date != null ? sdf.format(date.getTime()) : null;
     }
 
@@ -232,7 +216,6 @@ public class Person {
                 ", birthday=" + formatDate(birthday) +
                 ", death=" + formatDate(death) +
                 ", sex=" + sex +
-                ", contactInformation=" + contactInformation +
                 ", avatar=" + avatar +
                 ", description='" + description + '\'' +
                 '}';
