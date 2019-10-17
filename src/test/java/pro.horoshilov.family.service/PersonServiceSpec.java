@@ -2,14 +2,8 @@ package pro.horoshilov.family.service;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
 
-import com.github.javafaker.Faker;
-import com.github.javafaker.Name;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +15,6 @@ import pro.horoshilov.family.exception.NotFoundEntityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -32,8 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(locations = "classpath:test.properties")
 public class PersonServiceSpec {
 
-    private Random random = new Random();
-
     @Autowired
     private PersonService personService;
 
@@ -43,29 +34,8 @@ public class PersonServiceSpec {
 
     }
 
-    private Person generatePerson() {
-        final Faker faker = new Faker(new Locale("ru"));
-        final Person person = new Person();
-        final Name nameItem = faker.name();
-        final String[] name = nameItem.nameWithMiddle().split(" ");
-        person.setName(new Person.Name(name[0], name[1], name[2]));
-        person.setSex(random.nextInt(100) > 50 ? Person.Sex.MAN : Person.Sex.WOMAN);
-
-        final Calendar birthday = new GregorianCalendar();
-
-        birthday.setTime(faker.date().birthday());
-        birthday.set(Calendar.HOUR_OF_DAY, 0);
-        birthday.set(Calendar.MINUTE, 0);
-        birthday.set(Calendar.SECOND, 0);
-        birthday.set(Calendar.MILLISECOND, 0);
-
-        person.setBirthday(birthday);
-
-        return person;
-    }
-
     @Test
-    public void testInsert() throws EmptyInsertIdException {
+    public void testAdd() throws EmptyInsertIdException {
         Person person = new Person();
         person.setName(new Person.Name("Павел", "Сергеевич", "Хорошилов"));
         person.setSex(Person.Sex.MAN);
@@ -92,9 +62,9 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        personService.add(generatePerson());
-        personService.add(generatePerson());
-        personService.add(generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
 
         List<Person> personListNew = personService.findAll();
 
@@ -106,12 +76,12 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person = generatePerson();
+        final Person person = GeneratorUtil.generatePerson();
 
         Long personId = personService.add(person);
-        personService.add(generatePerson());
-        personService.add(generatePerson());
-        personService.add(generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
+        personService.add(GeneratorUtil.generatePerson());
 
         Person personFromDb = personService.findById(personId);
 
@@ -133,9 +103,9 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person1 = generatePerson();
-        final Person person2 = generatePerson();
-        final Person person3 = generatePerson();
+        final Person person1 = GeneratorUtil.generatePerson();
+        final Person person2 = GeneratorUtil.generatePerson();
+        final Person person3 = GeneratorUtil.generatePerson();
 
         Long personId1 = personService.add(person1);
         Long personId2 = personService.add(person2);
@@ -162,7 +132,7 @@ public class PersonServiceSpec {
         List<Person> personListOld = personService.findAll();
         assertThat(personListOld.size()).isEqualTo(0);
 
-        final Person person = generatePerson();
+        final Person person = GeneratorUtil.generatePerson();
         final Person.Name name = new Person.Name("name", "middle", "lastName");
         person.setName(name);
         person.setSex(Person.Sex.MAN);

@@ -8,29 +8,20 @@ import java.util.Objects;
 public class ContactInformation {
     private Long id;
 
+    /** Значение. */
     private String value;
 
+    /** Название. */
     private String code;
 
+    /** Тип записи. */
     private Type type;
 
+    /** Позиция в списке. */
     private Integer position;
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ContactInformation that = (ContactInformation) o;
-        return Objects.equals(position, that.position) &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(value, that.value) &&
-                Objects.equals(code, that.code) &&
-                type == that.type;
-    }
+    public ContactInformation() {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, value, code, type, position);
     }
 
     public ContactInformation(
@@ -45,17 +36,6 @@ public class ContactInformation {
         this.code = code;
         this.type = type;
         this.position = position;
-    }
-
-    @Override
-    public String toString() {
-        return "ContactInformation{" +
-                "id=" + id +
-                ", value='" + value + '\'' +
-                ", code='" + code + '\'' +
-                ", type=" + type +
-                ", position=" + position +
-                '}';
     }
 
     public Long getId() {
@@ -78,11 +58,59 @@ public class ContactInformation {
         return position;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
     public enum Type {
         PHONE,
         EMAIL,
         ADDRESS,
         DATE,
         GEO_POSITION
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContactInformation that = (ContactInformation) o;
+        return Objects.equals(position, that.position) &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(value, that.value) &&
+                Objects.equals(code, that.code) &&
+                type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, value, code, type, position);
+    }
+
+    @Override
+    public String toString() {
+        return "ContactInformation{" +
+                "id=" + id +
+                ", value='" + value + '\'' +
+                ", code='" + code + '\'' +
+                ", type=" + type +
+                ", position=" + position +
+                '}';
     }
 }

@@ -33,16 +33,16 @@ public class PersonController {
     }
 
     @PostMapping
-    public BaseResponse insert(@RequestParam final Person person) throws EmptyInsertIdException {
+    public BaseResponse add(@RequestParam("person") final Person person) throws EmptyInsertIdException {
         final Map<String, Long> result = new HashMap<>();
-        final Long personId = personService.add(person);
-        result.put("personId", personId);
+        final Long id = personService.add(person);
+        result.put("id", id);
 
         return new SuccessResponse<>(result);
     }
 
     @DeleteMapping
-    public BaseResponse remove(@RequestParam final Person person) throws NotFoundEntityException {
+    public BaseResponse remove(@RequestParam("person") final Person person) throws NotFoundEntityException {
         final Map<String, Long> result = new HashMap<>();
         personService.remove(person);
         result.put("personId", person.getId());

@@ -19,7 +19,7 @@ public class PersonService {
     private PersonRepository personRepository;
 
     @Autowired
-    PersonService(PersonRepository personRepository) {
+    PersonService(final PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 
