@@ -143,16 +143,16 @@ public class PersonRepository implements IRepository<Person> {
         return namedParameters;
     }
 
-    private class PersonRowMapper implements RowMapper<Person> {
+    private static class PersonRowMapper implements RowMapper<Person> {
 
         @Override
         public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Person person = new Person();
+            final Person person = new Person();
 
             final Date birthdayRow = rs.getDate("birthday");
 
             if (birthdayRow != null) {
-                Calendar birthday = new GregorianCalendar();
+                final Calendar birthday = new GregorianCalendar();
                 birthday.setTime(birthdayRow);
 
                 person.setBirthday(birthday);

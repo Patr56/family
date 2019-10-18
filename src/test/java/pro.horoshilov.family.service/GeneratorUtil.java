@@ -10,11 +10,11 @@ import com.github.javafaker.Name;
 import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 
-public class GeneratorUtil {
+class GeneratorUtil {
 
     private static Random random = new Random();
 
-    public static Person generatePerson() {
+    static Person generatePerson() {
         final Faker faker = new Faker(new Locale("ru"));
         final Person person = new Person();
         final Name nameItem = faker.name();
@@ -35,7 +35,7 @@ public class GeneratorUtil {
         return person;
     }
 
-    public static ContactInformation generateContactInformation(final Integer position) {
+    static ContactInformation generateContactInformation(final Long personId, final Integer position) {
         final Faker faker = new Faker(new Locale("ru"));
 
         final int valueRand = random.nextInt(ContactInformation.Type.values().length);
@@ -68,6 +68,7 @@ public class GeneratorUtil {
         }
 
         final ContactInformation contactInformation = new ContactInformation();
+        contactInformation.setPersonId(personId);
         contactInformation.setCode(code);
         contactInformation.setValue(value);
         contactInformation.setType(type);

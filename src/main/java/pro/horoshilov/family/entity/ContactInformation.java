@@ -11,6 +11,9 @@ public class ContactInformation {
     /** Значение. */
     private String value;
 
+    /** Идентификатор человека. */
+    private Long personId;
+
     /** Название. */
     private String code;
 
@@ -26,16 +29,26 @@ public class ContactInformation {
 
     public ContactInformation(
             final Long id,
+            final Long personId,
             final String value,
             final String code,
             final Type type,
             final Integer position
     ) {
         this.id = id;
+        this.personId = personId;
         this.value = value;
         this.code = code;
         this.type = type;
         this.position = position;
+    }
+
+    public Long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(Long personId) {
+        this.personId = personId;
     }
 
     public Long getId() {
@@ -93,6 +106,7 @@ public class ContactInformation {
         ContactInformation that = (ContactInformation) o;
         return Objects.equals(position, that.position) &&
                 Objects.equals(id, that.id) &&
+                Objects.equals(personId, that.personId) &&
                 Objects.equals(value, that.value) &&
                 Objects.equals(code, that.code) &&
                 type == that.type;
@@ -100,13 +114,14 @@ public class ContactInformation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, value, code, type, position);
+        return Objects.hash(id, personId, value, code, type, position);
     }
 
     @Override
     public String toString() {
         return "ContactInformation{" +
                 "id=" + id +
+                ", personId=" + personId +
                 ", value='" + value + '\'' +
                 ", code='" + code + '\'' +
                 ", type=" + type +

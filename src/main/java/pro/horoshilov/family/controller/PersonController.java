@@ -10,6 +10,7 @@ import pro.horoshilov.family.entity.SuccessResponse;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
+import pro.horoshilov.family.exception.RequestParamException;
 import pro.horoshilov.family.service.PersonService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,14 @@ public class PersonController {
     }
 
     @GetMapping("{personId}")
-    public BaseResponse findById(@PathVariable("personId") final Long personId) throws FoundTooManyEntityException, NotFoundEntityException {
+    public BaseResponse findById(
+            @PathVariable("personId") final Long personId
+    ) throws FoundTooManyEntityException, NotFoundEntityException, RequestParamException {
+
+        if (personId == null) {
+            throw new RequestParamException("Param personId not set");
+        }
+
         final Map<String, Person> result = new HashMap<>();
         final Person person = personService.findById(personId);
         result.put("person", person);

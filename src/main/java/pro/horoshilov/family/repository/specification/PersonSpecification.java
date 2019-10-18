@@ -2,7 +2,7 @@ package pro.horoshilov.family.repository.specification;
 
 abstract class PersonSpecification {
     //language=sql
-    protected final static String SQL =
+    final static String SQL =
             "select " +
             "      p.person_id, " +
             "      p.birthday, " +
