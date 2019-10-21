@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +47,16 @@ public class PersonController {
     public BaseResponse remove(@RequestParam("person") final Person person) throws NotFoundEntityException {
         final Map<String, Long> result = new HashMap<>();
         personService.remove(person);
-        result.put("personId", person.getId());
+        result.put("id", person.getId());
+
+        return new SuccessResponse<>(result);
+    }
+
+    @PutMapping
+    public BaseResponse update(@RequestParam("person") final Person person) throws NotFoundEntityException {
+        final Map<String, Long> result = new HashMap<>();
+        personService.update(person);
+        result.put("id", person.getId());
 
         return new SuccessResponse<>(result);
     }

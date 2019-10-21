@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.ContactInformation;
+import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.repository.specification.ISqlSpecification;
 
@@ -21,6 +22,26 @@ import org.springframework.stereotype.Repository;
 
 @Repository("contactInformationRepository")
 public class ContactInformationRepository implements IRepository<ContactInformation> {
+
+    //language=sql
+    private final static String SQL_DELETE_CI =
+            "delete from contact_information ci " +
+                  "where ci.contact_information_id = :contact_information_id";
+
+    //language=sql
+    private final static String SQL_DELETE_ALL_CI =
+            "delete from contact_information ci " +
+                    "where ci.person_id = :person_id";
+
+    // language=sql
+    private final static String SQL_UPDATE_CI =
+            "update contact_information ci " +
+               "set ci.person_id = :person_id, " +
+                   "ci.code = :code, " +
+                   "ci.value = :value, " +
+                   "ci.type = :type, " +
+                   "ci.position = :position " +
+             "where ci.contact_information_id = :contact_information_id";
 
     // language=sql
     private final static String SQL_INSERT_CONTACT_INFORMATION =
@@ -70,12 +91,25 @@ public class ContactInformationRepository implements IRepository<ContactInformat
 
     @Override
     public int update(final ContactInformation contactInformation) {
-        throw new UnsupportedOperationException("Method not implemented");
+        final Long contactInformationId = contactInformation.getId();
+
+        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("contact_information_id", contactInformationId);
+        return namedParameterJdbcTemplate.update(SQL_UPDATE_CI, sqlParameterSource);
     }
 
     @Override
     public int remove(final ContactInformation contactInformation) {
-        throw new UnsupportedOperationException("Method not implemented");
+        final Long contactInformationId = contactInformation.getId();
+
+        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("contact_information_id", contactInformationId);
+        return namedParameterJdbcTemplate.update(SQL_DELETE_CI, sqlParameterSource);
+    }
+
+    public int removeAll(final Person person) {
+        final Long personId = person.getId();
+
+        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("person_id", personId);
+        return namedParameterJdbcTemplate.update(SQL_DELETE_ALL_CI, sqlParameterSource);
     }
 
     @Override
