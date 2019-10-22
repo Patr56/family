@@ -14,17 +14,21 @@ import pro.horoshilov.family.exception.RequestParamException;
 import pro.horoshilov.family.service.PersonService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("person")
+@RestController("personController")
+@RequestMapping(value = "person")
 public class PersonController {
 
     private PersonService personService;
@@ -34,8 +38,9 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @PostMapping
-    public BaseResponse add(@RequestParam("person") final Person person) throws EmptyInsertIdException {
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse add(@RequestBody final Person person) throws EmptyInsertIdException {
         final Map<String, Long> result = new HashMap<>();
         final Long id = personService.add(person);
         result.put("id", id);
@@ -43,8 +48,8 @@ public class PersonController {
         return new SuccessResponse<>(result);
     }
 
-    @DeleteMapping
-    public BaseResponse remove(@RequestParam("person") final Person person) throws NotFoundEntityException {
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse remove(@RequestBody final Person person) throws NotFoundEntityException {
         final Map<String, Long> result = new HashMap<>();
         personService.remove(person);
         result.put("id", person.getId());
@@ -52,8 +57,8 @@ public class PersonController {
         return new SuccessResponse<>(result);
     }
 
-    @PutMapping
-    public BaseResponse update(@RequestParam("person") final Person person) throws NotFoundEntityException {
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse update(@RequestBody final Person person) throws NotFoundEntityException {
         final Map<String, Long> result = new HashMap<>();
         personService.update(person);
         result.put("id", person.getId());
@@ -61,7 +66,7 @@ public class PersonController {
         return new SuccessResponse<>(result);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse findAll() {
         final Map<String, List<Person>> result = new HashMap<>();
         final List<Person> persons = personService.findAll();
@@ -70,7 +75,7 @@ public class PersonController {
         return new SuccessResponse<>(result);
     }
 
-    @GetMapping("{personId}")
+    @GetMapping(path = "{personId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse findById(
             @PathVariable("personId") final Long personId
     ) throws FoundTooManyEntityException, NotFoundEntityException, RequestParamException {
