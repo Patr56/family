@@ -1,7 +1,9 @@
-package pro.horoshilov.family.service;
+package pro.horoshilov.family.helper;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -10,11 +12,20 @@ import com.github.javafaker.Name;
 import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 
-class GeneratorUtil {
+public class GeneratorUtil {
 
     private static Random random = new Random();
 
-    static Person generatePerson() {
+    public static List<Person> generatePersons(final int count) {
+        final List<Person> result = new LinkedList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(generatePerson());
+        }
+
+        return result;
+    }
+
+    public static Person generatePerson() {
         final Faker faker = new Faker(new Locale("ru"));
         final Person person = new Person();
         final Name nameItem = faker.name();
@@ -35,7 +46,7 @@ class GeneratorUtil {
         return person;
     }
 
-    static ContactInformation generateContactInformation(final Long personId, final Integer position) {
+    public static ContactInformation generateContactInformation(final Long personId, final Integer position) {
         final Faker faker = new Faker(new Locale("ru"));
 
         final int valueRand = random.nextInt(ContactInformation.Type.values().length);
