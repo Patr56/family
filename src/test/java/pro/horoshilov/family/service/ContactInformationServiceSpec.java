@@ -11,6 +11,7 @@ import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
+import pro.horoshilov.family.helper.GeneratorUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
