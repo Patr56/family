@@ -151,6 +151,9 @@ public class Person {
         /** Фамилия. */
         private String last;
 
+        public Name() {
+        }
+
         public Name(final String first, final String middle, final String last) {
             this.first = first;
             this.middle = middle;
