@@ -3,4 +3,4 @@ sudo: false
 jdk:
   - openjdk8
 script:
-  - mvn test
+  - mvn test -B
