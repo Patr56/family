@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @JdbcTest
 @TestPropertySource(locations = "classpath:test.properties")
-public class PersonServiceSpec {
+public class PersonServiceTest {
 
     @Autowired
     private PersonService personService;

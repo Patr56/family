@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {PersonController.class, GlobalDefaultExceptionHandler.class})
 @WebAppConfiguration
 @EnableWebMvc
-public class PersonControllerSpec {
+public class PersonControllerTest {
 
     private MockMvc mockMvc;
 
