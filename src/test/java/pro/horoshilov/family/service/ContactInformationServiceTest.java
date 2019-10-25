@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @JdbcTest
 @TestPropertySource(locations = "classpath:test.properties")
-public class ContactInformationServiceSpec {
+public class ContactInformationServiceTest {
 
     @Autowired
     private ContactInformationService contactInformationService;
