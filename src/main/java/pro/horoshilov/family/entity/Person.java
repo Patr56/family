@@ -26,8 +26,8 @@ public class Person {
     /** Пол. */
     private Sex sex;
 
-    /** Аватарка. */
-    private Photo avatar;
+    /** Ссылка на фото аватарки. */
+    private Long avatarId;
 
     /** Описание. */
     private String description;
@@ -41,7 +41,7 @@ public class Person {
             final Calendar birthday,
             final Calendar death,
             final Sex sex,
-            final Photo avatar,
+            final Long avatarId,
             final String description
     ) {
         this.id = id;
@@ -49,7 +49,7 @@ public class Person {
         this.birthday = birthday;
         this.death = death;
         this.sex = sex;
-        this.avatar = avatar;
+        this.avatarId = avatarId;
         this.description = description;
     }
 
@@ -59,7 +59,7 @@ public class Person {
         this.birthday = person.getBirthday();
         this.death = person.getDeath();
         this.sex = person.getSex();
-        this.avatar = person.getAvatar();
+        this.avatarId = person.getAvatarId();
         this.description = person.getDescription();
     }
 
@@ -87,8 +87,8 @@ public class Person {
         return id;
     }
 
-    public Photo getAvatar() {
-        return avatar;
+    public Long getAvatarId() {
+        return avatarId;
     }
 
     public void setId(final Long id) {
@@ -111,8 +111,8 @@ public class Person {
         this.sex = sex;
     }
 
-    public void setAvatar(final Photo avatar) {
-        this.avatar = avatar;
+    public void setAvatarId(final Long avatarId) {
+        this.avatarId = avatarId;
     }
 
     public void setDescription(final String description) {
@@ -129,13 +129,13 @@ public class Person {
                 Objects.equals(formatDate(birthday), formatDate(person.birthday)) &&
                 Objects.equals(formatDate(death), formatDate(person.death)) &&
                 sex == person.sex &&
-                Objects.equals(avatar, person.avatar) &&
+                Objects.equals(avatarId, person.avatarId) &&
                 Objects.equals(description, person.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, formatDate(birthday), formatDate(death), sex, avatar, description);
+        return Objects.hash(id, name, formatDate(birthday), formatDate(death), sex, avatarId, description);
     }
 
     /**
@@ -219,7 +219,7 @@ public class Person {
                 ", birthday=" + formatDate(birthday) +
                 ", death=" + formatDate(death) +
                 ", sex=" + sex +
-                ", avatar=" + avatar +
+                ", avatarId=" + avatarId +
                 ", description='" + description + '\'' +
                 '}';
     }

@@ -37,6 +37,7 @@ public class PersonRepository implements IRepository<Person> {
             "update person p " +
                "set p.birthday = :birthday, " +
                    "p.death = :death, " +
+                   "p.avatar_id = :avatar_id, " +
                    "p.description = :description, " +
                    "p.name_first = :name_first, " +
                    "p.name_middle = :name_middle, " +
@@ -49,6 +50,7 @@ public class PersonRepository implements IRepository<Person> {
             "insert into person ( " +
                         "birthday, " +
                         "death, " +
+                        "avatar_id, " +
                         "description, " +
                         "name_first, " +
                         "name_middle, " +
@@ -57,6 +59,7 @@ public class PersonRepository implements IRepository<Person> {
                 "values ( " +
                         ":birthday, " +
                         ":death, " +
+                        ":avatar_id, " +
                         ":description, " +
                         ":name_first, " +
                         ":name_middle, " +
@@ -65,15 +68,6 @@ public class PersonRepository implements IRepository<Person> {
 
     //language=sql
     private final static String SQL_DELETE_PERSON = "delete from person p where p.person_id = :person_id";
-
-    //language=sql
-    private final static String SQL_GET_CONTACT_INFORMATION =
-            "select " +
-                   "ci.code, " +
-                   "ci.value " +
-            "from " +
-                "contact_information ci " +
-            "where ci.person_id = :person_id;";
 
     @Override
     public Long add(final Person person) throws EmptyInsertIdException {
@@ -126,6 +120,12 @@ public class PersonRepository implements IRepository<Person> {
             namedParameters.put("death", null);
         }
 
+        if (person.getAvatarId() != null) {
+            namedParameters.put("avatar_id", person.getAvatarId());
+        } else {
+            namedParameters.put("avatar_id", null);
+        }
+
         namedParameters.put("description", person.getDescription());
 
         if (person.getName() != null) {
@@ -159,6 +159,12 @@ public class PersonRepository implements IRepository<Person> {
             }
 
             final Date deathRow = rs.getDate("death");
+
+            final Long avatarId = rs.getLong("avatar_id");
+
+            if (avatarId > 0) {
+                person.setAvatarId(avatarId);
+            }
 
             if (deathRow != null) {
                 Calendar death = new GregorianCalendar();

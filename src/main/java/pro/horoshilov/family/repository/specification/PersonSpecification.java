@@ -7,6 +7,7 @@ abstract class PersonSpecification {
             "      p.person_id, " +
             "      p.birthday, " +
             "      p.death, " +
+            "      p.avatar_id, " +
             "      p.description, " +
             "      p.name_first, " +
             "      p.name_last, " +

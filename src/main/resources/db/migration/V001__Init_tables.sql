@@ -1,8 +1,15 @@
+CREATE TABLE photo(
+    photo_id serial PRIMARY KEY,
+    url varchar (1024),
+    type varchar (4) NOT NULL
+);
+
 CREATE TABLE person(
     person_id serial PRIMARY KEY,
     name_first varchar (255) NOT NULL,
     name_middle varchar (255),
     name_last varchar (255) NOT NULL,
+    avatar_id integer REFERENCES photo,
     birthday date,
     death date,
     sex varchar (10) NOT NULL,
@@ -16,12 +23,6 @@ CREATE TABLE contact_information(
     value text NOT NULL,
     type varchar(16) NOT NULL,
     position smallint NOT NULL
-);
-
-CREATE TABLE photo(
-    photo_id serial PRIMARY KEY,
-    url varchar (1024),
-    type varchar (4) NOT NULL
 );
 
 CREATE TABLE photo_information(
