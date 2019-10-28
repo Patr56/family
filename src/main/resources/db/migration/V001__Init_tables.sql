@@ -1,7 +1,7 @@
 CREATE TABLE photo(
     photo_id serial PRIMARY KEY,
-    url varchar (1024),
-    type varchar (4) NOT NULL
+    url varchar (1024) NOT NULL,
+    type varchar (10) NOT NULL
 );
 
 CREATE TABLE person(

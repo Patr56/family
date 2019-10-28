@@ -11,6 +11,7 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
+import pro.horoshilov.family.entity.Photo;
 
 public class GeneratorUtil {
 
@@ -86,5 +87,18 @@ public class GeneratorUtil {
         contactInformation.setPosition(position);
 
         return contactInformation;
+    }
+
+    public static Photo generatePhoto() {
+        final Faker faker = new Faker(new Locale("ru"));
+        final Photo photo = new Photo();
+
+        final int valueRand = random.nextInt(Photo.Type.values().length);
+        final Photo.Type type = Photo.Type.values()[valueRand];
+
+        photo.setUrl(faker.file().fileName());
+        photo.setType(type);
+
+        return photo;
     }
 }

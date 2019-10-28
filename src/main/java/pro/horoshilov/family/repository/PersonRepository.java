@@ -34,36 +34,36 @@ public class PersonRepository implements IRepository<Person> {
 
     // language=sql
     private final static String SQL_UPDATE_PERSON =
-            "update person p " +
-               "set p.birthday = :birthday, " +
-                   "p.death = :death, " +
-                   "p.avatar_id = :avatar_id, " +
-                   "p.description = :description, " +
-                   "p.name_first = :name_first, " +
-                   "p.name_middle = :name_middle, " +
-                   "p.name_last = :name_last, " +
-                   "p.sex = :sex " +
+            "update person p \n" +
+               "set p.birthday = :birthday, \n" +
+                   "p.death = :death, \n" +
+                   "p.avatar_id = :avatar_id, \n" +
+                   "p.description = :description, \n" +
+                   "p.name_first = :name_first, \n" +
+                   "p.name_middle = :name_middle, \n" +
+                   "p.name_last = :name_last, \n" +
+                   "p.sex = :sex \n" +
              "where p.person_id = :person_id";
 
     // language=sql
     private final static String SQL_INSERT_PERSON =
-            "insert into person ( " +
-                        "birthday, " +
-                        "death, " +
-                        "avatar_id, " +
-                        "description, " +
-                        "name_first, " +
-                        "name_middle, " +
-                        "name_last, " +
-                        "sex) " +
-                "values ( " +
-                        ":birthday, " +
-                        ":death, " +
-                        ":avatar_id, " +
-                        ":description, " +
-                        ":name_first, " +
-                        ":name_middle, " +
-                        ":name_last, " +
+            "insert into person ( \n" +
+                        "birthday, \n" +
+                        "death, \n" +
+                        "avatar_id, \n" +
+                        "description, \n" +
+                        "name_first, \n" +
+                        "name_middle, \n" +
+                        "name_last, \n" +
+                        "sex) \n" +
+                "values ( \n" +
+                        ":birthday, \n" +
+                        ":death, \n" +
+                        ":avatar_id, \n" +
+                        ":description, \n" +
+                        ":name_first, \n" +
+                        ":name_middle, \n" +
+                        ":name_last, \n" +
                         ":sex)";
 
     //language=sql
@@ -80,7 +80,7 @@ public class PersonRepository implements IRepository<Person> {
         if (keyHolder.getKey() != null) {
             return keyHolder.getKey().longValue();
         } else {
-            throw new EmptyInsertIdException("Can't return person id");
+            throw new EmptyInsertIdException("Can't return person id.");
         }
     }
 
@@ -183,9 +183,7 @@ public class PersonRepository implements IRepository<Person> {
 
             person.setName(personName);
 
-            final Long personId = rs.getLong("person_id");
-
-            person.setId(personId);
+            person.setId(rs.getLong("person_id"));
             person.setSex(Person.Sex.valueOf(rs.getString("sex")));
 
             return person;

@@ -25,38 +25,38 @@ public class ContactInformationRepository implements IRepository<ContactInformat
 
     //language=sql
     private final static String SQL_DELETE_CI =
-            "delete from contact_information ci " +
+            "delete from contact_information ci \n" +
                   "where ci.contact_information_id = :contact_information_id";
 
     //language=sql
     private final static String SQL_DELETE_ALL_CI =
-            "delete from contact_information ci " +
+            "delete from contact_information ci \n" +
                     "where ci.person_id = :person_id";
 
     // language=sql
     private final static String SQL_UPDATE_CI =
-            "update contact_information ci " +
-               "set ci.person_id = :person_id, " +
-                   "ci.code = :code, " +
-                   "ci.value = :value, " +
-                   "ci.type = :type, " +
-                   "ci.position = :position " +
+            "update contact_information ci \n" +
+               "set ci.person_id = :person_id, \n" +
+                   "ci.code = :code, \n" +
+                   "ci.value = :value, \n" +
+                   "ci.type = :type, \n" +
+                   "ci.position = :position \n" +
              "where ci.contact_information_id = :contact_information_id";
 
     // language=sql
     private final static String SQL_INSERT_CONTACT_INFORMATION =
-            "insert into contact_information ( " +
-                         "person_id, " +
-                         "code, " +
-                         "value, " +
-                         "type, " +
-                         "position) " +
-                 "values ( " +
-                         ":person_id, " +
-                         ":code, " +
-                         ":value, " +
-                         ":type, " +
-                         ":position " +
+            "insert into contact_information ( \n" +
+                         "person_id, \n" +
+                         "code, \n" +
+                         "value, \n" +
+                         "type, \n" +
+                         "position) \n" +
+                 "values ( \n" +
+                         ":person_id, \n" +
+                         ":code, \n" +
+                         ":value, \n" +
+                         ":type, \n" +
+                         ":position \n" +
                  ")";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
