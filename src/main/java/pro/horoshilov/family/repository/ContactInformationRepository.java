@@ -3,118 +3,106 @@ package pro.horoshilov.family.repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.ContactInformation;
-import pro.horoshilov.family.entity.Person;
-import pro.horoshilov.family.exception.EmptyInsertIdException;
-import pro.horoshilov.family.repository.specification.ISqlSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository("contactInformationRepository")
-public class ContactInformationRepository implements IRepository<ContactInformation> {
+public class ContactInformationRepository extends AbstractRepository<ContactInformation> {
+
+    private final static String ENTITY_NAME = ContactInformation.class.getName();
 
     //language=sql
-    private final static String SQL_DELETE_CI =
-            "delete from contact_information ci \n" +
-                  "where ci.contact_information_id = :contact_information_id";
-
-    //language=sql
-    private final static String SQL_DELETE_ALL_CI =
-            "delete from contact_information ci \n" +
-                    "where ci.person_id = :person_id";
+    private final static String SQL_DELETE = "delete from contact_information ci \n";
 
     // language=sql
-    private final static String SQL_UPDATE_CI =
+    private final static String SQL_UPDATE =
             "update contact_information ci \n" +
-               "set ci.person_id = :person_id, \n" +
-                   "ci.code = :code, \n" +
-                   "ci.value = :value, \n" +
-                   "ci.type = :type, \n" +
-                   "ci.position = :position \n" +
-             "where ci.contact_information_id = :contact_information_id";
+            "   set ci.person_id = :person_id, \n" +
+            "       ci.code = :code, \n" +
+            "       ci.value = :value, \n" +
+            "       ci.type = :type, \n" +
+            "       ci.position = :position \n";
 
     // language=sql
-    private final static String SQL_INSERT_CONTACT_INFORMATION =
+    private final static String SQL_INSERT =
             "insert into contact_information ( \n" +
-                         "person_id, \n" +
-                         "code, \n" +
-                         "value, \n" +
-                         "type, \n" +
-                         "position) \n" +
-                 "values ( \n" +
-                         ":person_id, \n" +
-                         ":code, \n" +
-                         ":value, \n" +
-                         ":type, \n" +
-                         ":position \n" +
-                 ")";
+            "            person_id, \n" +
+            "            code, \n" +
+            "            value, \n" +
+            "            type, \n" +
+            "            position) \n" +
+            "    values (:person_id, \n" +
+            "            :code, \n" +
+            "            :value, \n" +
+            "            :type, \n" +
+            "            :position)";
+
+    //language=sql
+    private final static String SQL_SELECT =
+            "select \n" +
+             "       ci.contact_information_id, \n" +
+             "       ci.person_id, \n" +
+             "       ci.code, \n" +
+             "       ci.value, \n" +
+             "       ci.type, \n" +
+             "       ci.position \n" +
+             "from \n" +
+             "      contact_information ci \n";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Autowired
-    public ContactInformationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    @Override
+    protected String getSqlSelect() {
+        return SQL_SELECT;
     }
 
     @Override
-    public Long add(final ContactInformation contactInformation) throws EmptyInsertIdException {
+    protected String getSqlInsert() {
+        return SQL_INSERT;
+    }
 
+    @Override
+    protected String getSqlUpdate() {
+        return SQL_UPDATE;
+    }
+
+    @Override
+    protected String getSqlDelete() {
+        return SQL_DELETE;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return ENTITY_NAME;
+    }
+
+    @Override
+    protected RowMapper<ContactInformation> getRowMapper() {
+        return new ContactInformationRowMapper();
+    }
+
+    @Override
+    protected Map<String, Object> getParams(ContactInformation entity) {
         final Map<String, Object> namedParameter = new HashMap<>();
 
-        namedParameter.put("person_id", contactInformation.getPersonId());
-        namedParameter.put("code", contactInformation.getCode());
-        namedParameter.put("value", contactInformation.getValue());
-        namedParameter.put("type", contactInformation.getType().name());
-        namedParameter.put("position", contactInformation.getPosition());
+        namedParameter.put("person_id", entity.getPersonId());
+        namedParameter.put("code", entity.getCode());
+        namedParameter.put("value", entity.getValue());
+        namedParameter.put("type", entity.getType().name());
+        namedParameter.put("position", entity.getPosition());
 
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameter);
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        namedParameterJdbcTemplate.update(SQL_INSERT_CONTACT_INFORMATION, sqlParameterSource, keyHolder);
-        if (keyHolder.getKey() != null) {
-            return keyHolder.getKey().longValue();
-        } else {
-            throw new EmptyInsertIdException("Can't return person id");
-        }
+        return namedParameter;
     }
 
-    @Override
-    public int update(final ContactInformation contactInformation) {
-        final Long contactInformationId = contactInformation.getId();
-
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("contact_information_id", contactInformationId);
-        return namedParameterJdbcTemplate.update(SQL_UPDATE_CI, sqlParameterSource);
-    }
-
-    @Override
-    public int remove(final ContactInformation contactInformation) {
-        final Long contactInformationId = contactInformation.getId();
-
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("contact_information_id", contactInformationId);
-        return namedParameterJdbcTemplate.update(SQL_DELETE_CI, sqlParameterSource);
-    }
-
-    public int removeAll(final Person person) {
-        final Long personId = person.getId();
-
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("person_id", personId);
-        return namedParameterJdbcTemplate.update(SQL_DELETE_ALL_CI, sqlParameterSource);
-    }
-
-    @Override
-    public List<ContactInformation> query(ISqlSpecification specification) {
-        return namedParameterJdbcTemplate.query(specification.toSqlClauses(), specification.getParamMap(), new ContactInformationRepository.ContactInformationRowMapper());
+    @Autowired
+    public ContactInformationRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        super(namedParameterJdbcTemplate);
     }
 
     private static class ContactInformationRowMapper implements RowMapper<ContactInformation> {

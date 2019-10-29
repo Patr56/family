@@ -4,14 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PhotoFindByIdSpecification implements ISqlSpecification {
-    //language=sql
-    private final static String SQL =
-            "select \n" +
-            "      p.photo_id, \n" +
-            "      p.url, \n" +
-            "      p.type \n" +
-            "from \n" +
-            "      photo p \n";
 
     public Map<String, ?> getParamMap() {
         return paramMap;
@@ -26,8 +18,8 @@ public class PhotoFindByIdSpecification implements ISqlSpecification {
     }
 
     @Override
-    public String toSqlClauses() {
+    public String toSqlClauses(final String sql) {
         //language=sql
-        return SQL + "where p.photo_id = :photo_id";
+        return sql + " where p.photo_id = :photo_id";
     }
 }

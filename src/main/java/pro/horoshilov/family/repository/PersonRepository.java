@@ -6,139 +6,134 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.Person;
-import pro.horoshilov.family.exception.EmptyInsertIdException;
-import pro.horoshilov.family.repository.specification.ISqlSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository("personRepository")
-public class PersonRepository implements IRepository<Person> {
+public class PersonRepository extends AbstractRepository<Person> {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final static String ENTITY_NAME = Person.class.getName();
+
+    // language=sql
+    private final static String SQL_UPDATE =
+            "update person p \n" +
+            "   set p.birthday = :birthday, \n" +
+            "       p.death = :death, \n" +
+            "       p.avatar_id = :avatar_id, \n" +
+            "       p.description = :description, \n" +
+            "       p.name_first = :name_first, \n" +
+            "       p.name_middle = :name_middle, \n" +
+            "       p.name_last = :name_last, \n" +
+            "       p.sex = :sex \n";
+
+    // language=sql
+    private final static String SQL_INSERT =
+            "insert into person ( \n" +
+            "            birthday, \n" +
+            "            death, \n" +
+            "            avatar_id, \n" +
+            "            description, \n" +
+            "            name_first, \n" +
+            "            name_middle, \n" +
+            "            name_last, \n" +
+            "            sex) \n" +
+            "    values (:birthday, \n" +
+            "            :death, \n" +
+            "            :avatar_id, \n" +
+            "            :description, \n" +
+            "            :name_first, \n" +
+            "            :name_middle, \n" +
+            "            :name_last, \n" +
+            "            :sex)";
+
+    //language=sql
+    private final static String SQL_DELETE = "delete from person p \n";
+
+    //language=sql
+    final static String SQL_SELECT =
+            "select p.person_id, \n" +
+            "       p.birthday, \n" +
+            "       p.death, \n" +
+            "       p.avatar_id, \n" +
+            "       p.description, \n" +
+            "       p.name_first, \n" +
+            "       p.name_last, \n" +
+            "       p.name_middle, \n" +
+            "       p.person_id, \n" +
+            "       p.sex \n" +
+            "  from person p \n";
 
     @Autowired
     PersonRepository(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
-
-    // language=sql
-    private final static String SQL_UPDATE_PERSON =
-            "update person p \n" +
-               "set p.birthday = :birthday, \n" +
-                   "p.death = :death, \n" +
-                   "p.avatar_id = :avatar_id, \n" +
-                   "p.description = :description, \n" +
-                   "p.name_first = :name_first, \n" +
-                   "p.name_middle = :name_middle, \n" +
-                   "p.name_last = :name_last, \n" +
-                   "p.sex = :sex \n" +
-             "where p.person_id = :person_id";
-
-    // language=sql
-    private final static String SQL_INSERT_PERSON =
-            "insert into person ( \n" +
-                        "birthday, \n" +
-                        "death, \n" +
-                        "avatar_id, \n" +
-                        "description, \n" +
-                        "name_first, \n" +
-                        "name_middle, \n" +
-                        "name_last, \n" +
-                        "sex) \n" +
-                "values ( \n" +
-                        ":birthday, \n" +
-                        ":death, \n" +
-                        ":avatar_id, \n" +
-                        ":description, \n" +
-                        ":name_first, \n" +
-                        ":name_middle, \n" +
-                        ":name_last, \n" +
-                        ":sex)";
-
-    //language=sql
-    private final static String SQL_DELETE_PERSON = "delete from person p where p.person_id = :person_id";
-
-    @Override
-    public Long add(final Person person) throws EmptyInsertIdException {
-        final Map<String, Object> namedParameters = getParamsFromPerson(person);
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameters);
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        namedParameterJdbcTemplate.update(SQL_INSERT_PERSON, sqlParameterSource, keyHolder);
-        if (keyHolder.getKey() != null) {
-            return keyHolder.getKey().longValue();
-        } else {
-            throw new EmptyInsertIdException("Can't return person id.");
-        }
+        super(namedParameterJdbcTemplate);
     }
 
     @Override
-    public int update(Person person) {
-        final Map<String, Object> namedParameters = getParamsFromPerson(person);
-        namedParameters.put("person_id", person.getId());
-
-        return namedParameterJdbcTemplate.update(SQL_UPDATE_PERSON, namedParameters);
+    protected String getSqlSelect() {
+        return SQL_SELECT;
     }
 
     @Override
-    public int remove(Person person) {
-        final Long personId = person.getId();
-
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("person_id", personId);
-        return namedParameterJdbcTemplate.update(SQL_DELETE_PERSON, sqlParameterSource);
+    protected String getSqlInsert() {
+        return SQL_INSERT;
     }
 
     @Override
-    public List<Person> query(ISqlSpecification specification) {
-        return namedParameterJdbcTemplate.query(specification.toSqlClauses(), specification.getParamMap(), new PersonRowMapper());
+    protected String getSqlUpdate() {
+        return SQL_UPDATE;
     }
 
-    private Map<String, Object> getParamsFromPerson(final Person person) {
+    @Override
+    protected String getSqlDelete() {
+        return SQL_DELETE;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return ENTITY_NAME;
+    }
+
+    @Override
+    protected RowMapper<Person> getRowMapper() {
+        return new PersonRowMapper();
+    }
+
+    @Override
+    protected Map<String, Object> getParams(Person entity) {
         final Map<String, Object> namedParameters = new HashMap<>();
 
-        if (person.getBirthday() != null) {
-            namedParameters.put("birthday", person.getBirthday().getTime());
+        if (entity.getBirthday() != null) {
+            namedParameters.put("birthday", entity.getBirthday().getTime());
         } else {
             namedParameters.put("birthday", null);
         }
 
-        if (person.getDeath() != null) {
-            namedParameters.put("death", person.getDeath().getTime());
+        if (entity.getDeath() != null) {
+            namedParameters.put("death", entity.getDeath().getTime());
         } else {
             namedParameters.put("death", null);
         }
 
-        if (person.getAvatarId() != null) {
-            namedParameters.put("avatar_id", person.getAvatarId());
-        } else {
-            namedParameters.put("avatar_id", null);
-        }
+        namedParameters.put("avatar_id", entity.getAvatarId());
+        namedParameters.put("description", entity.getDescription());
 
-        namedParameters.put("description", person.getDescription());
-
-        if (person.getName() != null) {
-            namedParameters.put("name_first", person.getName().getFirst());
-            namedParameters.put("name_middle", person.getName().getMiddle());
-            namedParameters.put("name_last", person.getName().getLast());
+        if (entity.getName() != null) {
+            namedParameters.put("name_first", entity.getName().getFirst());
+            namedParameters.put("name_middle", entity.getName().getMiddle());
+            namedParameters.put("name_last", entity.getName().getLast());
         } else {
             namedParameters.put("name_first", null);
             namedParameters.put("name_last", null);
             namedParameters.put("name_middle", null);
         }
 
-        namedParameters.put("sex", person.getSex().name());
+        namedParameters.put("sex", entity.getSex().name());
 
         return namedParameters;
     }

@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface ISqlSpecification {
     public Map<String, ?> getParamMap();
-    String toSqlClauses();
+    String toSqlClauses(final String sql);
 }

@@ -3,32 +3,25 @@ package pro.horoshilov.family.repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.Photo;
-import pro.horoshilov.family.exception.EmptyInsertIdException;
-import pro.horoshilov.family.repository.specification.ISqlSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository("photoRepository")
-public class PhotoRepository implements IRepository<Photo> {
+public class PhotoRepository extends AbstractRepository<Photo> {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final static String ENTITY_NAME = Photo.class.getName();
 
     // language=sql
     private final static String SQL_INSERT =
             "insert into photo ( \n" +
-            "            url, \n" +
-            "            type) \n" +
+            "       url, \n" +
+            "       type) \n" +
             "values (:url, \n" +
             "        :type)";
 
@@ -36,55 +29,54 @@ public class PhotoRepository implements IRepository<Photo> {
     private final static String SQL_UPDATE =
             "update photo p \n" +
             "   set p.url = :url, \n" +
-            "       p.type = :type \n" +
-            " where p.photo_id = :photo_id";
+            "       p.type = :type \n";
 
     //language=sql
-    private final static String SQL_DELETE = "delete from photo p \n" +
-                                             "      where p.photo_id = :photo_id";
+    private final static String SQL_SELECT =
+            "select p.photo_id, \n" +
+            "       p.url, \n" +
+            "       p.type \n" +
+            "  from photo p\n";
+
+    //language=sql
+    private final static String SQL_DELETE = "delete from photo p \n";
 
     @Autowired
     PhotoRepository(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        super(namedParameterJdbcTemplate);
     }
 
     @Override
-    public Long add(Photo photo) throws EmptyInsertIdException {
-        final Map<String, Object> namedParameters = getParams(photo);
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource(namedParameters);
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        namedParameterJdbcTemplate.update(SQL_INSERT, sqlParameterSource, keyHolder);
-        if (keyHolder.getKey() != null) {
-            return keyHolder.getKey().longValue();
-        } else {
-            throw new EmptyInsertIdException("Can't return photo id.");
-        }
+    protected String getSqlSelect() {
+        return SQL_SELECT;
     }
 
     @Override
-    public int update(Photo photo) {
-        final Map<String, Object> namedParameters = getParams(photo);
-        namedParameters.put("photo_id", photo.getId());
-
-        return namedParameterJdbcTemplate.update(SQL_UPDATE, namedParameters);
+    protected String getSqlInsert() {
+        return SQL_INSERT;
     }
 
     @Override
-    public int remove(Photo photo) {
-        final Long photoId = photo.getId();
-
-        final SqlParameterSource sqlParameterSource = new MapSqlParameterSource("photo_id", photoId);
-        return namedParameterJdbcTemplate.update(SQL_DELETE, sqlParameterSource);
+    protected String getSqlUpdate() {
+        return SQL_UPDATE;
     }
 
     @Override
-    public List<Photo> query(ISqlSpecification specification) {
-        return namedParameterJdbcTemplate.query(specification.toSqlClauses(), specification.getParamMap(), new PhotoRowMapper());
+    protected String getSqlDelete() {
+        return SQL_DELETE;
     }
 
-    private Map<String, Object> getParams(final Photo photo) {
+    @Override
+    protected String getEntityName() {
+        return ENTITY_NAME;
+    }
+
+    @Override
+    protected RowMapper<Photo> getRowMapper() {
+        return new PhotoRowMapper();
+    }
+
+    protected Map<String, Object> getParams(final Photo photo) {
         final Map<String, Object> namedParameters = new HashMap<>();
 
         if (photo.getType() != null) {

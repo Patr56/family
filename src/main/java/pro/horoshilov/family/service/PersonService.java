@@ -6,6 +6,7 @@ import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
+import pro.horoshilov.family.repository.IRepository;
 import pro.horoshilov.family.repository.PersonRepository;
 import pro.horoshilov.family.repository.specification.PersonFindAllSpecification;
 import pro.horoshilov.family.repository.specification.PersonFindByIdSpecification;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service("personService")
 public class PersonService {
 
-    private PersonRepository personRepository;
+    private IRepository<Person> personRepository;
 
     @Autowired
     PersonService(final PersonRepository personRepository) {
@@ -28,14 +29,17 @@ public class PersonService {
     }
 
     public void update(final Person person) throws NotFoundEntityException {
-        final int count = personRepository.update(person);
+        final int count = personRepository.update(
+                person,
+                new PersonFindByIdSpecification(person.getId())
+        );
         if (count == 0) {
             throw new NotFoundEntityException(String.format("Person with id: %s not found for updating.", person.getId()));
         }
     }
 
     public void remove(final Person person) throws NotFoundEntityException {
-        final int count = personRepository.remove(person);
+        final int count = personRepository.remove(new PersonFindByIdSpecification(person.getId()));
         if (count == 0) {
             throw new NotFoundEntityException(String.format("Person with id: %s not found for deleting.", person.getId()));
         }

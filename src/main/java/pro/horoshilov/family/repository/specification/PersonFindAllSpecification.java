@@ -3,15 +3,15 @@ package pro.horoshilov.family.repository.specification;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PersonFindAllSpecification extends PersonSpecification implements ISqlSpecification {
+public class PersonFindAllSpecification implements ISqlSpecification {
     @Override
     public Map<String, ?> getParamMap() {
         return new HashMap<>();
     }
 
     @Override
-    public String toSqlClauses() {
+    public String toSqlClauses(final String sql) {
         // language=sql
-        return SQL + "where 1 = 1";
+        return sql + "where 1 = 1";
     }
 }

@@ -3,7 +3,7 @@ package pro.horoshilov.family.repository.specification;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PersonFindByIdSpecification implements ISqlSpecification {
+public class PhotoInformationFindByIdSpecification implements ISqlSpecification {
 
     public Map<String, ?> getParamMap() {
         return paramMap;
@@ -11,15 +11,15 @@ public class PersonFindByIdSpecification implements ISqlSpecification {
 
     private final Map<String, ?> paramMap;
 
-    public PersonFindByIdSpecification(final Long personId) {
+    public PhotoInformationFindByIdSpecification(final Long photoInformationId) {
         final Map<String, Long> paramMap = new HashMap<>();
-        paramMap.put("person_id", personId);
+        paramMap.put("photo_information_id", photoInformationId);
         this.paramMap = paramMap;
     }
 
     @Override
     public String toSqlClauses(final String sql) {
         //language=sql
-        return sql + " where p.person_id = :person_id";
+        return sql + " where pi.photo_information_id = :photo_information_id";
     }
 }

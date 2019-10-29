@@ -6,6 +6,7 @@ import pro.horoshilov.family.entity.Photo;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
+import pro.horoshilov.family.repository.IRepository;
 import pro.horoshilov.family.repository.PhotoRepository;
 import pro.horoshilov.family.repository.specification.PhotoFindByIdSpecification;
 
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service("photoService")
 public class PhotoService {
 
-    private PhotoRepository photoRepository;
+    private IRepository<Photo> photoRepository;
 
     @Autowired
     PhotoService(final PhotoRepository photoRepository) {
@@ -27,14 +28,14 @@ public class PhotoService {
     }
 
     public void update(final Photo photo) throws NotFoundEntityException {
-        final int count = photoRepository.update(photo);
+        final int count = photoRepository.update(photo, new PhotoFindByIdSpecification(photo.getId()));
         if (count == 0) {
             throw new NotFoundEntityException(String.format("Photo with id: %s not found for updating.", photo.getId()));
         }
     }
 
     public void remove(final Photo photo) throws NotFoundEntityException {
-        final int count = photoRepository.remove(photo);
+        final int count = photoRepository.remove(new PhotoFindByIdSpecification(photo.getId()));
         if (count == 0) {
             throw new NotFoundEntityException(String.format("Photo with id: %s not found for deleting.", photo.getId()));
         }
