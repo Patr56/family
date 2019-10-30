@@ -6,10 +6,10 @@ import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
-import pro.horoshilov.family.repository.ContactInformationRepository;
+import pro.horoshilov.family.repository.impl.ContactInformationRepository;
 import pro.horoshilov.family.repository.IRepository;
-import pro.horoshilov.family.repository.specification.ContactInformationFindByIdSpecification;
-import pro.horoshilov.family.repository.specification.ContactInformationFindByPersonIdSpecification;
+import pro.horoshilov.family.repository.specification.impl.ContactInformationFindByIdSpecification;
+import pro.horoshilov.family.repository.specification.impl.ContactInformationFindByPersonIdSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

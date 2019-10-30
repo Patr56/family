@@ -25,7 +25,7 @@ public abstract class AbstractRepository<T> implements IRepository<T> {
     protected abstract RowMapper<T> getRowMapper();
     protected abstract Map<String, Object> getParams(T entity);
 
-    AbstractRepository(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public AbstractRepository(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 

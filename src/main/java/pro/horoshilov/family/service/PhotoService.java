@@ -7,8 +7,8 @@ import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
 import pro.horoshilov.family.repository.IRepository;
-import pro.horoshilov.family.repository.PhotoRepository;
-import pro.horoshilov.family.repository.specification.PhotoFindByIdSpecification;
+import pro.horoshilov.family.repository.impl.PhotoRepository;
+import pro.horoshilov.family.repository.specification.impl.PhotoFindByIdSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

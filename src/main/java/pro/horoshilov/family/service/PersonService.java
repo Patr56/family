@@ -7,9 +7,9 @@ import pro.horoshilov.family.exception.EmptyInsertIdException;
 import pro.horoshilov.family.exception.FoundTooManyEntityException;
 import pro.horoshilov.family.exception.NotFoundEntityException;
 import pro.horoshilov.family.repository.IRepository;
-import pro.horoshilov.family.repository.PersonRepository;
-import pro.horoshilov.family.repository.specification.PersonFindAllSpecification;
-import pro.horoshilov.family.repository.specification.PersonFindByIdSpecification;
+import pro.horoshilov.family.repository.impl.PersonRepository;
+import pro.horoshilov.family.repository.specification.impl.PersonFindAllSpecification;
+import pro.horoshilov.family.repository.specification.impl.PersonFindByIdSpecification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

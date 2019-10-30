@@ -1,4 +1,4 @@
-package pro.horoshilov.family.repository;
+package pro.horoshilov.family.repository.impl;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.Person;
+import pro.horoshilov.family.repository.AbstractRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

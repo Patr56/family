@@ -1,9 +1,11 @@
-package pro.horoshilov.family.repository.specification;
+package pro.horoshilov.family.repository.specification.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContactInformationFindByIdSpecification implements ISqlSpecification{
+import pro.horoshilov.family.repository.specification.ISqlSpecification;
+
+public class ContactInformationFindByIdSpecification implements ISqlSpecification {
     public Map<String, ?> getParamMap() {
         return paramMap;
     }

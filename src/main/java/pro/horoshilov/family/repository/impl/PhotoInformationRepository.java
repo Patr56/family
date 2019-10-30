@@ -1,4 +1,4 @@
-package pro.horoshilov.family.repository;
+package pro.horoshilov.family.repository.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pro.horoshilov.family.entity.PhotoInformation;
+import pro.horoshilov.family.repository.AbstractRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

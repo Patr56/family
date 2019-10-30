@@ -12,6 +12,7 @@ import com.github.javafaker.Name;
 import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.entity.Photo;
+import pro.horoshilov.family.entity.Relationship;
 
 public class GeneratorUtil {
 
@@ -100,5 +101,18 @@ public class GeneratorUtil {
         photo.setType(type);
 
         return photo;
+    }
+
+    public static Relationship generateRelationship(final Long personId, final Long relatedId) {
+        final Relationship relationship = new Relationship();
+
+        final int valueRand = random.nextInt(Photo.Type.values().length);
+        final Relationship.Type type = Relationship.Type.values()[valueRand];
+
+        relationship.setRelatedId(relatedId);
+        relationship.setPersonId(personId);
+        relationship.setType(type);
+
+        return relationship;
     }
 }
