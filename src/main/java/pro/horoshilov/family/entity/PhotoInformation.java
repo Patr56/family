@@ -120,8 +120,8 @@ public class PhotoInformation {
             }
 
             public Coordinate(final Double x, final Double y) {
-                this.x = x;
-                this.y = y;
+                this.x = roundAvoid(x);
+                this.y = roundAvoid(y);
             }
 
             public Double getX() {
@@ -133,11 +133,16 @@ public class PhotoInformation {
             }
 
             public void setX(double x) {
-                this.x = x;
+                this.x = roundAvoid(x);
             }
 
             public void setY(double y) {
-                this.y = y;
+                this.y = roundAvoid(y);
+            }
+
+            static double roundAvoid(double value) {
+                double scale = Math.pow(10, 3);
+                return Math.round(value * scale) / scale;
             }
 
             @Override

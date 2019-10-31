@@ -26,22 +26,20 @@ public class PhotoInformationRepository extends AbstractRepository<PhotoInformat
     // language=sql
     private final static String SQL_INSERT =
             " insert into photo_information ( \n" +
-            "        photo_id, \n" +
-            "        person_id, \n" +
-            "        description, \n" +
-            "        area_top_left_x, \n" +
-            "        area_top_left_y, \n" +
-            "        area_bottom_right_x, \n" +
-            "        area_bottom_right_y)" +
-            " values (" +
-            "        :photo_id, \n" +
-            "        :person_id, \n" +
-            "        :description, \n" +
-            "        :area_top_left_x, \n" +
-            "        :area_top_left_y, \n" +
-            "        :area_bottom_right_x, \n" +
-            "        :area_bottom_right_y \n" +
-            "        )";
+            "         photo_id, \n" +
+            "         person_id, \n" +
+            "         description, \n" +
+            "         area_top_left_x, \n" +
+            "         area_top_left_y, \n" +
+            "         area_bottom_right_x, \n" +
+            "         area_bottom_right_y) \n" +
+            " values (:photo_id, \n" +
+            "         :person_id, \n" +
+            "         :description, \n" +
+            "         :area_top_left_x, \n" +
+            "         :area_top_left_y, \n" +
+            "         :area_bottom_right_x, \n" +
+            "         :area_bottom_right_y)";
 
     // language=sql
     private final static String SQL_UPDATE =
@@ -103,8 +101,8 @@ public class PhotoInformationRepository extends AbstractRepository<PhotoInformat
     protected Map<String, Object> getParams(PhotoInformation entity) {
         final Map<String, Object> namedParameters = new HashMap<>();
 
-        namedParameters.put("photo_id", entity.getPersonId());
-        namedParameters.put("person_id", entity.getPhotoId());
+        namedParameters.put("photo_id", entity.getPhotoId());
+        namedParameters.put("person_id", entity.getPersonId());
         namedParameters.put("description", entity.getDescription());
 
         if (entity.getArea() != null && entity.getArea().getTopLeft() != null ) {

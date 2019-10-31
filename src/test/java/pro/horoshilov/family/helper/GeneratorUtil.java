@@ -12,6 +12,7 @@ import com.github.javafaker.Name;
 import pro.horoshilov.family.entity.ContactInformation;
 import pro.horoshilov.family.entity.Person;
 import pro.horoshilov.family.entity.Photo;
+import pro.horoshilov.family.entity.PhotoInformation;
 import pro.horoshilov.family.entity.Relationship;
 
 public class GeneratorUtil {
@@ -97,10 +98,33 @@ public class GeneratorUtil {
         final int valueRand = random.nextInt(Photo.Type.values().length);
         final Photo.Type type = Photo.Type.values()[valueRand];
 
-        photo.setUrl(faker.file().fileName());
+        photo.setUrl(faker.internet().url());
         photo.setType(type);
 
         return photo;
+    }
+
+    public static PhotoInformation generatePhotoInformation(final Long personId, final Long photoId) {
+        final Faker faker = new Faker(new Locale("ru"));
+        final PhotoInformation photoInformation = new PhotoInformation();
+
+        PhotoInformation.Area.Coordinate topLeft = new PhotoInformation.Area.Coordinate(
+                random.nextDouble(),
+                random.nextDouble()
+        );
+
+        PhotoInformation.Area.Coordinate bottomRight = new PhotoInformation.Area.Coordinate(
+                random.nextDouble(),
+                random.nextDouble()
+        );
+
+        PhotoInformation.Area area = new PhotoInformation.Area(topLeft, bottomRight);
+
+        photoInformation.setPersonId(personId);
+        photoInformation.setPhotoId(photoId);
+        photoInformation.setArea(area);
+        photoInformation.setDescription(faker.internet().avatar());
+        return photoInformation;
     }
 
     public static Relationship generateRelationship(final Long personId, final Long relatedId) {
